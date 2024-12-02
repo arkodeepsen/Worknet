@@ -6,10 +6,13 @@ from routes.job import get_filtered_jobs, get_job_details, search
 from routes.recommend_knn import recommend_jobs
 from routes.chatbot import greeting, chat, get_chat_history_endpoint, clear_chat_history
 from routes.resume_ai import generate_job_description, generate_summary
+from routes.init_db import init_db
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
+
+init_db()
 
 @app.route('/')
 def index():
