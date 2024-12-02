@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Details</title>
+    <script src="/scripts/index.js"></script>
+    <script src="/scripts/jobs.js"></script>
+    <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script>// Check if userId is stored in sessionStorage or localStorage
+        window.onload = function() {
+            const sessionUserId = sessionStorage.getItem('userId');
+            const localUserId = localStorage.getItem('userId');
+            let userId = sessionUserId || localUserId;
+    
+            // If userId is 'null' or missing, treat it as logged out
+            if (userId === 'null' || !userId) {
+                userId = null;
+                // Hide the dropdown menu if not logged in
+                document.getElementById('maindropdownMenu').style.display = 'none';
+                setTimeout(() => {
+                    window.location.href = '/index';
+                }, 1000);
+            }}</script>
+    <style>
+        /* Font */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: #1c1c1c;
+            color: #eaeaea;
+        }
+
+        /* Navbar styling with glass effect */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+        }
+
+        body.dark-mode .navbar {
+            background: rgba(44, 62, 80, 0.3);
+        }
+
+        /* Dark Mode for Back Button */
+body.dark-mode .back-btn {
+    fill: #ffffff; /* White icon for dark mode */
+}
+
+body.dark-mode .back-btn svg {
+    fill: #ffffff; /* White SVG icon for dark mode */
+}
+
+/* Dark Mode for Center Logo */
+body.dark-mode .center-logo {
+    filter: brightness(0.8); /* Dim the logo slightly */
+}
+
+/* Dark Mode for Profile Link */
+body.dark-mode #username-small {
+    color: #e0e0e0; /* Light text color for username */
+}
+
+body.dark-mode .profile-pic-small {
+    border: 2px solid #e0e0e0; /* Add a light border to profile picture */
+}
+
+/* Dark Mode for Job Detail Container */
+body.dark-mode .job-detail-container {
+    background-color: rgba(18, 18, 18, 0.7); /* Darker background */
+    color: #e0e0e0; /* Light text for job details */
+}
+
+/* Dark Mode for Job Card */
+body.dark-mode .job-card {
+    background: rgba(35, 35, 35, 0.9); /* Dark glass effect for the card */
+    color: #e0e0e0; /* Light text color */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Darker shadow for job card */
+}
+
+body.dark-mode .job-card-header h3 {
+    color: #ffffff; /* White color for job title */
+}
+
+body.dark-mode .job-card-header p {
+    color: #bbbbbb; /* Lighter color for company name */
+}
+
+body.dark-mode .job-card-body {
+    color: #cccccc; /* Light text for job body */
+}
+
+/* Dark Mode Hover Effects for Job Card */
+body.dark-mode .job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6); /* Darker shadow on hover */
+}
+
+/* Dark Mode for WorkNet AI Apply Button */
+body.dark-mode .apply-button {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: #ffffff;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Darker shadow for button */
+}
+
+body.dark-mode .apply-button:hover {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7); /* Darker shadow on hover */
+}
+
+        /* Stylish Back Button with animation */
+        .back-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .back-btn svg {
+            width: 30px;
+            height: 30px;
+            fill: #3498db;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.2) rotate(-15deg);
+        }
+
+        /* Center logo */
+        .center-logo {
+            width: 100px;
+            transition: transform 0.3s ease;
+        }
+
+        .center-logo:hover {
+            transform: scale(1.1);
+        }
+
+        /* Profile link styling */
+        .profile-link {
+            display: flex;
+            align-items: center;
+        }
+
+        #username-small {
+            margin-right: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #000000;
+        }
+
+        .profile-pic-small {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Job Detail Container */
+.job-detail-container {
+    padding: 120px 20px 40px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.3);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+/* Job Card with cool animations */
+.job-card {
+    background: rgba(255, 255, 255, 0.85);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 1000px;
+    width: 100%;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: zoomIn 0.4s ease;
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+}
+
+/* Job Card header styling */
+.job-card-header {
+    text-align: center; /* Center-align text and image */
+    margin-bottom: 20px;
+}
+
+.job-card-header h3 {
+    font-size: 3rem; /* Increase font size */
+    color: #2c3e50;
+    margin: 0;
+}
+
+.job-card-header p {
+    font-size: 2rem; /* Increase font size */
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.company-image {
+    max-width: 250px;
+    height: auto;
+    display: block;
+    margin: 0 auto; /* Center the image */
+    margin-top: 10px; /* Add spacing between name and logo */
+}
+
+.job-card-body {
+    font-size: 1.5rem;
+    color: #555;
+}
+
+.job-card-body p {
+    margin-bottom: 10px;
+}
+
+/* Hover effects */
+.job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* WorkNet AI Apply Button */
+.apply-button {
+    display: inline-block;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 15px 30px;
+    border-radius: 50px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 20px;
+    width: auto;
+}
+
+.apply-button:hover {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+}
+
+.apply-button:active {
+    transform: scale(0.98); /* Slight shrink effect when clicked */
+}
+
+        body.dark-mode .job-card {
+            background: rgba(44, 62, 80, 0.85);
+            color: #ecf0f1;
+        }
+
+        body.dark-mode .job-card-header h3 {
+            color: #ecf0f1;
+        }
+
+        body.dark-mode .job-card-body p {
+            color: #ecf0f1;
+        }
+
+        /* Footer with glass effect */
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.3);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+            color: #000000;
+            font-size: 14px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        body.dark-mode footer {
+            background: rgba(44, 62, 80, 0.3);
+        }
+
+        /* Footer logo */
+        .footer-logo {
+            width: 75px;
+        }
+
+        /* Dark Mode Toggle in Footer */
+        .dark-mode-toggle {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .dark-mode-toggle i {
+            font-size: 1.5rem;
+            margin: 0 5px;
+            transition: color 0.3s ease;
+        }
+
+        .dark-mode-toggle:hover i {
+            color: #f39c12;
+        }
+
+        body.dark-mode .dark-mode-toggle i {
+            color: #f39c12;
+        }
+
+                .ai-icon-container {
+                  position: relative;
+                  display: inline-block;
+                }
+                
+                .ai-icon {
+                  width: 30px;
+                  height: 30px;
+                }
+                
+                .popup {
+                  display: none;
+                  position: absolute;
+                  bottom: 40px;
+                  left: 100%;
+                  transform: translateX(-50%);
+                  width: 300%;
+                  background-color: white;
+                  border: 1px solid #ccc;
+                  border-radius: 10px;
+                  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                  padding: 15px;
+                  z-index: 1500;
+                }
+                
+                .popup h3, .popup h4 {
+                  margin: 0 0 10px 0;
+                }
+                
+                .popup p {
+                  margin: 0 0 10px 0;
+                  font-size: 14px;
+                  color: #333;
+                }
+                
+                .ai-icon-container:hover .popup {
+                  display: block;
+                }
+                ::-webkit-scrollbar {
+                    width: 10px;
+                }
+                
+                ::-webkit-scrollbar-track {
+                    background: rgba(31, 31, 31, 0.5);
+                    border-radius: 10px;
+                }
+                
+                ::-webkit-scrollbar-thumb {
+                    background: rgba(255, 255, 255, 0.5);
+                    border-radius: 10px;
+                }
+                
+                ::-webkit-scrollbar-thumb:hover {
+                    background: rgba(255, 255, 255, 0.7);
+                }
+    </style>
+</head>
+<body>
+    <!-- Navbar Section -->
+    <nav class="navbar">
+        <!-- Back Button -->
+        <button class="back-btn" onclick="window.history.back();">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+        
+        <!-- Center Logo -->
+        <a href="/main"><img src="/assets/worknet.png" alt="WorkNet Logo" class="center-logo"></a>
+        <!-- Profile Section -->
+<div class="profile-link" id="profileToggle">
+    <!-- Username with Sliding Effect -->
+    <span id="username-small">Username</span>
+  
+    <!-- Profile Picture with onclick to show dropdown -->
+    <img id="profile-pic-small" class="profile-pic-small" src="/assets/default.jpg" alt="Profile Picture" onclick="toggleDropdown()">
+  </div>
+    <!-- Dropdown Menu -->
+    <div id="maindropdownMenu" class="dropdown-menu">
+      <ul>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="#" onclick="logout()">Logout</a></li>
+      </ul>
+    </div>
+    </nav>
+
+    <div class="loading-line" id="loadingLine"></div>
+<div class="apply-text-container" id="applyTextContainer">
+    <p id="applyText"></p>
+</div>
+
+    <!-- Job Details Container -->
+    <div id="jobDetailContainer" class="job-detail-container">
+        <!-- Job details will be populated here -->
+    </div>
+
+    <!-- Similar Jobs Section -->
+<div id="similarJobsContainer" class="similar-jobs-section">
+    <h3>Similar Jobs</h3>
+    <div id="similarJobs" class="similar-jobs-cards"></div>
+</div>
+
+    <!-- Footer -->
+    <footer>
+        <a href="https://rajasthan.gov.in/"><img src="/assets/logo.png" alt="Footer Logo" class="footer-logo"></a>
+        <p>WorkNet &copy; 2024. All Rights Reserved.</p>
+    </footer>
+    <script>
+        
+ 
+        async function applyWithWorkNetAI(job) {
+            const jobTitle = job.job_title || 'N/A';
+            const companyName = job.company_name || 'N/A';
+            const location = job.job_location || 'N/A';
+            const jobVia = job.job_via || 'N/A';
+            
+            const message = `Applying for ${jobTitle} at ${companyName}, ${location} with WorkNet AI...`;
+                    
+                        // Apply blur effect and show loading line
+                        document.body.classList.add('blurred');
+                        const loadingLine = document.getElementById('loadingLine');
+                        loadingLine.style.width = '100%';
+                    
+                        // Wait for loading animation to complete
+                        setTimeout(() => {
+                            // Remove loading line and show message
+                            loadingLine.style.width = '0%';
+                            const applyTextContainer = document.getElementById('applyTextContainer');
+                            const applyText = document.getElementById('applyText');
+                            
+                            applyText.textContent = message;
+                            applyTextContainer.style.display = 'block';
+                    
+                            // Remove blur effect after message is shown
+                            setTimeout(() => {
+                                document.body.classList.remove('blurred');
+                            }, 2000); // Adjust the time as needed
+                    
+                        }, 2000); // This matches the transition duration of the loading line
+        
+                // Optionally use Google Custom Search API if no platform match is found
+                const googleSearchUrl = await searchApplicationLink(jobTitle, companyName, location);
+                setTimeout(() => {
+                    window.location.href = googleSearchUrl; // Redirect to LinkedIn job search
+                }, 1000); // Delay of 3 seconds
+        }
+        async function applyWithWorkNet(job) { 
+            const jobTitle = job.job_title || 'N/A';
+            const companyName = job.company_name || 'N/A';
+            const location = job.job_location || 'N/A';
+            let jobVia = job.job_via || 'N/A';
+        
+            // Trim out "via" from jobVia and clean the platform name
+            jobVia = jobVia.replace(/via\s*/i, '').trim();
+        
+            const message = `Smartly applying for ${jobTitle} at ${companyName}, ${location} through ${jobVia}...`;
+        
+            // Apply blur effect and show loading line
+            document.body.classList.add('blurred');
+            const loadingLine = document.getElementById('loadingLine');
+            loadingLine.style.width = '100%';
+        
+            // Wait for loading animation to complete
+            setTimeout(() => {
+                loadingLine.style.width = '0%';
+                const applyTextContainer = document.getElementById('applyTextContainer');
+                const applyText = document.getElementById('applyText');
+                
+                applyText.textContent = message;
+                applyTextContainer.style.display = 'block';
+        
+                // Remove blur effect after message is shown
+                setTimeout(() => {
+                    document.body.classList.remove('blurred');
+                }, 2000); // Adjust the time as needed
+        
+            }, 2000); // This matches the transition duration of the loading line
+        
+            // Known job platforms and their search URL formats
+            const platformMappings = {
+                'LinkedIn': `https://www.linkedin.com/jobs/search?keywords=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Indeed': `https://www.indeed.com/jobs?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&rbc=${encodeURIComponent(companyName)}`,
+                'BeBee India': `https://www.bebee.com/jobs?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Shine': `https://www.shine.com/job-search/${encodeURIComponent(jobTitle)}-jobs-in-${encodeURIComponent(location)}`,
+                'SimplyHired': `https://www.simplyhired.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}`,
+                'Jooble': `https://jooble.org/jobs-${encodeURIComponent(jobTitle)}`,
+                'Trabajo.org': `https://trabajo.org/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}`,
+                'Adzuna': `https://www.adzuna.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}`,
+                'The Muse': `https://www.themuse.com/jobs?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}`,
+                'Glassdoor': `https://www.glassdoor.com/Job/jobs.htm?sc.keyword=${encodeURIComponent(jobTitle)}&locT=C&locId=&locKeyword=${encodeURIComponent(location)}&srs=RECENT_SEARCHES&company=${encodeURIComponent(companyName)}`,
+                'Monster': `https://www.monster.com/jobs/search/?q=${encodeURIComponent(jobTitle)}&where=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'CareerBuilder': `https://www.careerbuilder.com/jobs?keywords=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company_name=${encodeURIComponent(companyName)}`,
+                'Naukri': `https://www.naukri.com/${encodeURIComponent(jobTitle)}-jobs-in-${encodeURIComponent(location)}?company=${encodeURIComponent(companyName)}`,
+                'ZipRecruiter': `https://www.ziprecruiter.com/candidate/search?search=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Dice': `https://www.dice.com/jobs?q=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'AngelList': `https://angel.co/jobs?query=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Hired': `https://hired.com/job-search?query=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'JobStreet': `https://www.jobstreet.com.ph/en/job-search/${encodeURIComponent(jobTitle)}-jobs-in-${encodeURIComponent(location)}/?company=${encodeURIComponent(companyName)}`,
+                'WorkIndia': `https://www.workindia.in/jobs/${encodeURIComponent(jobTitle)}-jobs-in-${encodeURIComponent(location)}/?company=${encodeURIComponent(companyName)}`,
+                'Freshersworld': `https://www.freshersworld.com/jobs/jobsearch/${encodeURIComponent(jobTitle)}-jobs-in-${encodeURIComponent(location)}?company=${encodeURIComponent(companyName)}`,
+                'JobServe': `https://www.jobserve.com/us/en/Job-Search/?keywords=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'FlexJobs': `https://www.flexjobs.com/search?search=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Remote.co': `https://remote.co/remote-jobs/search/?search_keywords=${encodeURIComponent(jobTitle)}&search_location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'We Work Remotely': `https://weworkremotely.com/remote-jobs/search?term=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Remote OK': `https://remoteok.io/remote-${encodeURIComponent(jobTitle)}-jobs?location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Jobbatical': `https://jobbatical.com/jobs?search=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Remotive': `https://remotive.io/remote-jobs/search?search=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Outsourcely': `https://www.outsourcely.com/remote-jobs/search?search=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Hubstaff Talent': `https://talent.hubstaff.com/search?search=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Job.com': `https://www.job.com/search?q=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Snagajob': `https://www.snagajob.com/job-search?q=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Upwork': `https://www.upwork.com/search/jobs/?q=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Freelancer': `https://www.freelancer.com/jobs/?keyword=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Guru': `https://www.guru.com/d/jobs/?q=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'PeoplePerHour': `https://www.peopleperhour.com/freelance-jobs?search=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Toptal': `https://www.toptal.com/freelance-jobs?search=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'SimplyHired': `https://www.simplyhired.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Jobrapido': `https://www.jobrapido.com/?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'CareerJet': `https://www.careerjet.com/search/jobs?s=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Neuvoo': `https://neuvoo.com/jobs?k=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'JobisJob': `https://www.jobisjob.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Jobcase': `https://www.jobcase.com/jobs/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'JobHat': `https://www.jobhat.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'JobInventory': `https://www.jobinventory.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Jobing': `https://www.jobing.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'JobMonkey': `https://www.jobmonkeyjobs.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'JobSpider': `https://www.jobspider.com/job/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Jobvertise': `https://www.jobvertise.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'JobVite': `https://www.jobvite.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'JobWeb': `https://www.jobweb.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'JobZone': `https://www.jobzone.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Juju': `https://www.juju.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Ladders': `https://www.theladders.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'LiveCareer': `https://www.livecareer.com/jobs/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'MightyRecruiter': `https://www.mightyrecruiter.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'MyJobHelper': `https://www.myjobhelper.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Neuvoo': `https://neuvoo.com/jobs?k=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Oodle': `https://jobs.oodle.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Patch': `https://patch.com/jobs/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Recruit.net': `https://www.recruit.net/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'SimplyHired': `https://www.simplyhired.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Snagajob': `https://www.snagajob.com/job-search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'StartWire': `https://www.startwire.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'TalentZoo': `https://www.talentzoo.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'TheJobNetwork': `https://www.thejobnetwork.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'TopUSAJobs': `https://www.topusajobs.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'Trovit': `https://jobs.trovit.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'US.jobs': `https://us.jobs/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'WayUp': `https://www.wayup.com/search?q=${encodeURIComponent(jobTitle)}&l=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`,
+                'ZipRecruiter': `https://www.ziprecruiter.com/candidate/search?search=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&company=${encodeURIComponent(companyName)}`
+            };
+        
+            // Fallback to Google search if platform is not found in mappings
+            const applyUrl = platformMappings[jobVia] || await searchApplicationLink(jobTitle, companyName, location);
+        
+            // Redirect to the application URL after a delay
+            setTimeout(() => {
+                window.location.href = applyUrl;
+            }, 1000); // Delay of 3 seconds
+        }
+        
+        async function searchApplicationLink(jobTitle, companyName, location) {
+            const searchUrl = `/job-application-link?jobTitle=${encodeURIComponent(jobTitle)}&companyName=${encodeURIComponent(companyName)}&location=${encodeURIComponent(location)}`;
+            
+            try {
+                const response = await fetch(searchUrl);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                return data.link;
+            } catch (error) {
+                console.error('Error fetching job application link:', error);
+                return 'https://www.google.com/search?q=' + encodeURIComponent(`${jobTitle} ${companyName} ${location} apply`);
+            }
+        }        
+
+        function createFloatingHearts(count) {
+            const parentDiv = document.getElementById('jobDetailContainer'); // Use your container div
+            
+            for (let i = 0; i < count; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart-effect');
+                heart.innerHTML = '&#10084;'; // Heart character
+        
+                // Set random starting position within the parent div
+                heart.style.left = Math.random() * parentDiv.clientWidth + 'px';
+                heart.style.bottom = '0'; // Start from the bottom of the parent div
+        
+                // Randomize floating direction by setting a CSS variable
+                const randomX = (Math.random() * 200 - 100) + 'px'; // Random horizontal movement
+                heart.style.setProperty('--random-x', randomX);
+        
+                // Append heart to the parent div
+                parentDiv.appendChild(heart);
+        
+                // Show and animate the heart
+                setTimeout(() => {
+                    heart.style.opacity = '1';
+                    heart.style.animation = `floatRandom ${Math.random() * 3 + 2}s ease forwards`; // Randomize duration
+                }, 100);
+        
+                // Add pop effect on click
+                heart.addEventListener('click', () => {
+                    heart.classList.add('popped');
+                    setTimeout(() => {
+                        heart.remove(); // Remove heart after it pops
+                    }, 200); // Delay to show pop effect
+                });
+        
+                // Remove the heart after the animation ends
+                setTimeout(() => {
+                    heart.remove();
+                }, 5000); // Adjust timing as needed
+            }
+        }
+        
+        async function getCompanyImage(companyName) {
+            try {
+                const response = await fetch(`/company/${encodeURIComponent(companyName)}/image`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                return data.imageUrl;
+            } catch (error) {
+                console.error('Error fetching company image:', error);
+                return '/assets/default-company-image.png'; // Fallback image
+            }
+        }
+
+                async function getSalaryDetails(jobTitle, location) {
+                    try {
+                        const response = await fetch(`/salary?job_title=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}`);
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        const data = await response.json();
+                        console.log('Salary API Response:', data); // Log the response
+                        return data;
+                    } catch (error) {
+                        console.error('Error fetching salary details:', error);
+                        return { average_salary: 'Salary data not available', full_data: null }; // Fallback message
+                    }
+                }
+        
+        async function updateJobDetailContainer(job) {
+            if (!job) {
+                document.getElementById('jobDetailContainer').innerHTML = '<p>Job not found.</p>';
+                return;
+            }
+        
+            const imageUrl = await getCompanyImage(job.company_name); // Fetch the company image
+            const salary = await getSalaryDetails(job.job_title, job.job_location);
+            console.log('Average Salary:', salary.average_salary);
+            console.log('Full Data:', salary.full_data);
+            function roundToNearestHundredThousand(number) {
+                return Math.round(number / 100000) * 100000;
+              }
+              
+              function formatIndianStyle(number) {
+                return number.toLocaleString('en-IN');
+              }
+              const roundedSalary = roundToNearestHundredThousand(salary.average_salary);
+              const formattedSalary = formatIndianStyle(roundedSalary);
+            const jobDetailContainer = document.getElementById('jobDetailContainer');
+        
+            // Parse job_skills if it's a string
+            let skillsArray = [];
+            try {
+                skillsArray = JSON.parse(job.job_skills.replace(/'/g, '"'));
+            } catch (e) {
+                console.error('Error parsing job_skills:', e);
+            }
+            const jobId = job.key_id;
+            console.log("Job ID:", jobId);
+            jobDetailContainer.innerHTML = `
+                <div class="job-card full-screen">
+                    <div class="job-card-header">
+                        <h3>${job.job_title || 'N/A'}</h3>
+                        <p><strong>Company:</strong> ${job.company_name || 'N/A'}</p>
+                        ${imageUrl ? `<img src="${imageUrl}" alt="${job.company_name} logo" class="company-image">` : ''}
+                    </div>
+                    <div class="job-card-body">
+                        <p><strong>Location:</strong> ${job.job_location || 'N/A'}</p>
+                        <p><strong>Skills:</strong> ${skillsArray.length > 0 ? skillsArray.join(', ') : 'N/A'}</p>
+                        <p><strong>Schedule Type:</strong> ${job.job_schedule_type || 'N/A'}</p>
+                        <p><strong>Degree:</strong> ${job.job_no_degree_mention ? 'Undergraduate' : 'Graduate & Post Graduate'}</p>
+                        <p><strong>Health Insurance:</strong> ${job.job_health_insurance ? 'Yes' : 'No'}</p>
+                        <p><strong>Work From Home:</strong> ${job.job_work_from_home ? 'Yes' : 'No'}</p>
+                <p>
+                    <div class="ai-icon-container">
+                    <strong>Estimated Yearly Salary<img src="/assets/salary-ai.png" alt="AI Icon" class="ai-icon">:</strong>
+                      <div class="popup">
+                        <h3>Salary Estimation Details</h3>
+                        <p id="full-data">Loading...</p>
+                        <h4>How AI is being used?</h4>
+                        <p>AI algorithms analyze vast amounts of job market data, including salaries, job titles, and locations, to provide accurate salary estimates. These algorithms use machine learning models to identify patterns and trends, ensuring that the salary estimates are as accurate as possible.</p>
+                      </div>
+                    </div>
+                    <span>${formattedSalary} INR</span>
+                  </span>
+                </p>
+                        <p><strong>Source:</strong> ${job.job_via || 'N/A'}</p>
+                        <p><strong>Retrieved:</strong> ${job.job_posted_date || 'N/A'}</p>
+                    </div>
+                    <div class="job-card-footer">
+                        <button class="apply-button" onclick="applyWithWorkNet(${JSON.stringify(job).replace(/"/g, '&quot;')})">
+                            Apply through ${job.job_via.replace(/via\s*/i, '').trim()}
+                        </button>
+                        <button class="apply-button ai" onclick="applyWithWorkNetAI(${JSON.stringify(job).replace(/"/g, '&quot;')})">
+                            Apply with WorkNet AI ✨
+                        </button>
+                        <div class="save-button ${job.saved ? 'toggled' : ''}" id="save-button-${jobId}" onclick="toggleSave('${jobId}')">
+                            <i class="fas fa-bookmark"></i>
+                        </div>
+                        <div class="heart-effect" id="heart-effect-${jobId}">&#10084;</div>
+                    </div>
+                </div>
+            `;
+            // Add event listener to the AI icon for hover effect
+    const aiIcon = document.querySelector('.ai-icon');
+    const fullDataElement = document.getElementById('full-data');
+
+    aiIcon.addEventListener('mouseenter', async function() {
+        try {
+            const response = await fetch(`/salary?job_title=${encodeURIComponent(job.job_title)}&location=${encodeURIComponent(job.job_location)}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            fullDataElement.textContent = JSON.stringify(data.full_data, null, 2);
+        } catch (error) {
+            console.error('Error fetching salary details:', error);
+            fullDataElement.textContent = 'Error fetching salary details';
+        }
+    });
+}
+        
+        // Call this when the DOM content is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const jobId = urlParams.get('id');
+        
+            if (jobId) {
+                fetch(`http://localhost:5000/job-details/${jobId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(job => {
+                        console.log('Job Details:', job);
+                        updateJobDetailContainer(job);
+                    })
+                    .catch(error => console.error('Error fetching job details:', error));
+            } else {
+                document.getElementById('jobDetailContainer').innerHTML = '<p>Job not found.</p>';
+            }
+        }); 
+        document.addEventListener('DOMContentLoaded', function () {
+            checkSavedJobs();
+        });
+
+        async function checkSavedJobs() {
+            const userId = localStorage.getItem('userId');
+        
+            try {
+                const response = await fetch(`/saved/${userId}`);
+                const data = await response.json();
+        
+                if (data.success) {
+                    const savedJobIds = new Set(data.jobs.map(job => job.job_id));
+                    updateJobCards(savedJobIds);
+                } else {
+                    console.error('Failed to retrieve saved jobs');
+                }
+            } catch (error) {
+                console.error('Error checking saved jobs:', error);
+            }
+        }
+        
+        function updateJobCards(savedJobIds) {
+            savedJobIds.forEach(jobId => {
+                const button = document.getElementById(`save-button-${jobId}`);
+                if (button) {
+                    const bookmarkIcon = button.querySelector('.fa-bookmark');
+                    bookmarkIcon.classList.add('saved');
+                    bookmarkIcon.style.color = 'rgba(0, 150, 255, 1.0)'; // Change to blue when saved
+                }
+            });
+        }
+        
+        async function saveJobToServer(jobId) {
+            const userId = localStorage.getItem('userId');
+            console.log(`Saving Job ID: ${jobId}, User ID: ${userId}`);
+        
+            try {
+                const response = await fetch('/save-job', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        jobId: jobId,
+                        userId: userId,
+                    }),
+                });
+        
+                const result = await response.json();
+                if (result.success) {
+                    console.log(`Job ${jobId} saved successfully`);
+                } else {
+                    console.error(`Failed to save job: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Error saving job:', error);
+            }
+        }        
+          
+        async function toggleSave(jobId) {
+    const userId = localStorage.getItem('userId');
+    const button = document.getElementById(`save-button-${jobId}`);
+    const bookmarkIcon = button.querySelector('.fa-bookmark');
+    button.classList.toggle('toggled');
+
+    if (bookmarkIcon.classList.contains('saved')) {
+        // Unsave job
+        bookmarkIcon.classList.remove('saved');
+        bookmarkIcon.style.color = '#00ffff'; // Default bookmark color
+
+        // Logic to unsave job
+        try {
+            const response = await fetch('/unsave-job', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    jobId: jobId,
+                    userId: userId,
+                }),
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                console.log(`Job ${jobId} unsaved successfully`);
+                // Optionally refresh saved jobs to ensure UI consistency
+                checkSavedJobs();
+            } else {
+                console.error(`Failed to unsave job: ${result.message}`);
+            }
+        } catch (error) {
+            console.error('Error unsaving job:', error);
+        }
+    } else {
+        // Save the job
+        bookmarkIcon.classList.add('saved');
+        bookmarkIcon.style.color = 'rgba(0, 150, 255, 1.0)'; // Change to blue when saved
+
+        // Save the job to the server
+        await saveJobToServer(jobId); // Await to ensure it saves before creating hearts
+        createFloatingHearts(10); // Adjust the number of hearts as needed
+    }
+}        
+    </script>
+    <script>
+        async function fetchSimilarJobs(jobId) {
+            const response = await fetch(`http://localhost:5000/similar-jobs/${jobId}`);
+            const jobs = await response.json();
+            return jobs;
+        }
+    
+        function displaySimilarJobs(jobs) {
+            const similarJobsContainer = document.getElementById('similarJobs');
+            similarJobsContainer.innerHTML = '';  // Clear previous results
+    
+            if (jobs.length > 0) {
+                jobs.forEach(job => {
+                    const jobCard = document.createElement('div');
+                    jobCard.classList.add('job-card-small');
+                    
+                    // Parse job_skills if it's a string
+                    let skillsArray = [];
+                    try {
+                        skillsArray = JSON.parse(job.job_skills.replace(/'/g, '"'));
+                    } catch (e) {
+                        console.error('Error parsing job_skills:', e);
+                    }
+
+                    jobCard.innerHTML = `
+                        <h4>${job.job_title || 'N/A'}</h4>
+                        <p><strong>Company:</strong> ${job.company_name || 'N/A'}</p>
+                        <p><strong>Location:</strong> ${job.job_location || 'N/A'}</p>
+                        <p><strong>Skills:</strong> ${skillsArray.length > 0 ? skillsArray.join(', ') : 'N/A'}</p>
+                        <p><strong>Schedule Type:</strong> ${job.job_schedule_type || 'N/A'}</p>
+                    `;
+                    const jobId = job.key_id;
+                    jobCard.style.cursor = 'pointer';
+                    jobCard.onclick = () => {
+                        window.location.href = `job-details?id=${jobId}`;
+                    };
+                    similarJobsContainer.appendChild(jobCard);
+                });
+            } else {
+                similarJobsContainer.innerHTML = '<p>No similar jobs found.</p>';
+            }
+        }
+    
+        // Fetch and display similar jobs when the job details page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const jobId = urlParams.get('id');
+    
+            if (jobId) {
+                fetchSimilarJobs(jobId).then(displaySimilarJobs);
+            }
+        });
+    </script>
+    
+    <style>
+        .similar-jobs-section {
+            margin-top: 40px;
+        }
+        
+        /* Similar Jobs Cards Container */
+        .similar-jobs-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 12px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            height: 100vh; /* Full viewport height */
+        }
+        
+        .similar-jobs-section h3 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        /* Small Job Card */
+        .job-card-small {
+            background: rgba(255, 255, 255, 0.85); /* Glass effect */
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            max-width: 250px;
+            width: 100%;
+            box-sizing: border-box;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        /* Hover effect for small job card */
+        .job-card-small:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Small Job Card Header */
+        .job-card-small h4 {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        /* Small Job Card Paragraph */
+        .job-card-small p {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        
+        /* Small Job Card Button */
+        .job-card-small button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .job-card-small button:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Fullscreen Job Card (applies the same principles for potential modal) */
+        .job-card-small.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.97);
+            z-index: 1000;
+            margin: 0;
+            border-radius: 0;
+            padding: 40px;
+            overflow-y: auto;
+            box-shadow: none;
+            transition: all 0.4s ease-in-out;
+        }
+        
+        /* Fullscreen Header */
+        .job-card-small.fullscreen h4 {
+            font-size: 2rem;
+        }
+        
+        /* Fullscreen Paragraph */
+        .job-card-small.fullscreen p {
+            font-size: 1.2rem;
+        }
+        
+        /* Close Button for Fullscreen Mode */
+        .job-card-small .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: #333;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .job-card-small .close-btn:hover {
+            color: #ff0000;
+        }
+        
+        /* Scrollbar for Similar Job Cards */
+        .similar-jobs-cards::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .similar-jobs-cards::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .similar-jobs-cards::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+        
+        .similar-jobs-cards::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Fullscreen Blur Effect */
+body.blurred {
+    background: rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    pointer-events: none; /* Prevent interactions while blurred */
+}
+
+/* Loading line */
+.loading-line {
+    position: absolute;
+    top: 45%; /* Slightly above center */
+    left: 50%;
+    width: 150px; /* Small width for the line */
+    height: 5px;
+    background: linear-gradient(90deg, #3498db, #1e90ff);
+    z-index: 1250;
+    transition: width 2s ease;
+    transform: translate(-50%, -100%); /* Center horizontally and move above message */
+}
+
+/* Apply text container */
+.apply-text-container {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.95); /* Slightly higher opacity for softness */
+    border-radius: 15px; /* Increased border radius */
+    padding: 25px; /* Slightly more padding */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    z-index: 10000;
+    width: 85%; /* Slightly increased width */
+}
+
+.job-card-footer {
+    display: flex;
+    gap: 50px; /* Small gap between buttons */
+    justify-content: center; /* Center buttons horizontally */
+}
+
+/* Beautifully styled text */
+.apply-text-container p {
+    font-size: 1.6rem; /* Increased font size */
+    color: #333; /* Softer color for text */
+    font-weight: 500; /* Lighter font weight */
+    line-height: 1.5; /* Increased line height for readability */
+}
+
+/* General Apply Button Styles */
+.apply-button {
+    background-color: rgba(255, 255, 255, 0.9); /* Softer glass-like effect */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 1rem;
+    color: white; /* Darker, more visible color for text */
+    cursor: pointer;
+    transition: background-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px); /* Adding glass-like blur effect */
+    animation: glow 1s infinite alternate ease-in-out;
+}
+
+/* Hover effect for Apply Button */
+.apply-button:hover {
+    background-color: rgba(255, 255, 255, 1);
+    transform: scale(1.07);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Special Button for WorkNet AI */
+.apply-button.ai {
+    background-color: rgba(52, 152, 219, 0.9); /* Softer glass effect for AI button */
+    color: white; /* Ensured visibility */
+    position: relative;
+    font-weight: bold;
+    border-radius: 12px; /* Softer corners */
+    box-shadow: 0 8px 20px rgba(0, 150, 255, 0.2), 0 0 12px rgba(0, 150, 255, 0.5);
+    animation: glowtrans 1s infinite alternate ease-in-out;
+}
+
+/* Hover and Focus Effects for WorkNet AI Button */
+.apply-button.ai:hover {
+    background-color: rgba(52, 152, 219, 1);
+    transform: scale(1.1);
+    box-shadow: 0 10px 20px rgba(0, 150, 255, 0.3);
+}
+
+/* Magic Sparkle Effect for WorkNet AI */
+.apply-button.ai::before {
+    content: '✨';
+    position: absolute;
+    top: -12px; /* Adjusted for balance */
+    right: -12px; /* Adjusted for balance */
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    animation: sparkle 2s infinite;
+}
+
+/* Idle Animation for Apply Button */
+@keyframes glow {
+    0% {
+        box-shadow: 0 8px 20px rgba(0, 150, 255, 0.2), 0 0 12px rgba(0, 150, 255, 0.3);
+        transform: scale(1.04);
+    }
+    100% {
+        box-shadow: 0 10px 30px rgba(0, 150, 255, 0.5), 0 0 20px rgba(0, 150, 255, 0.8);
+        transform: scale(1.05);
+    }
+}
+
+/* Idle Animation for WorkNet AI Button */
+@keyframes glowtrans {
+    0% {
+        box-shadow: 0 8px 20px rgba(0, 150, 255, 0.2), 0 0 12px rgba(0, 150, 255, 0.3);
+        transform: scale(1.05);
+    }
+    100% {
+        box-shadow: 0 10px 30px rgba(0, 150, 255, 0.5), 0 0 20px rgba(0, 150, 255, 0.8);
+        transform: scale(1.1);
+    }
+}
+
+/* Sparkle Animation */
+@keyframes sparkle {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(0deg);
+    }
+    50% {
+        opacity: 0.8;
+        transform: translate(-12px, 12px) rotate(180deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(360deg);
+    }
+}
+.save-button {
+    font-size: 3rem; /* Large size for the bookmark */
+    color: #00ffff; /* Default color */
+    cursor: pointer;
+    position: relative; /* Position for heart effect */
+    transition: color 0.4s ease; /* Smooth transition for color change */
+    animation: glow2 1s infinite alternate ease-in-out;
+    top: -50px; /* Move up by 50px */
+    color: rgba(52, 152, 219, 0.9);
+}
+
+.save-button .fas {
+    position: relative;
+}
+
+.save-button .fas::before {
+    content: '\f02e'; /* Unicode for the bookmark icon */
+    font-family: 'Font Awesome 5 Free'; /* Ensure you are using the correct Font Awesome version */
+    font-weight: 900; /* Ensure the correct weight is used */
+    position: absolute;
+    z-index: 1; /* Place behind the original icon */
+    color: transparent; /* Make the outline transparent */
+    -webkit-text-stroke: 2px rgba(52, 152, 219, 0.9); /* Create the dark outline effect */
+    /* text-stroke: 2px #000; Removed as it is not supported */
+}
+
+.save-button.toggled {
+    color: rgba(52, 152, 219, 0.9); /* Toggled color */
+}
+
+.save-button.toggled .fas::before {
+    color: rgba(52, 152, 219, 0.9); /* Toggled color */
+    -webkit-text-stroke: 2px rgba(52, 152, 219, 0.9); /* Outline matches toggled color */
+}
+@keyframes glow2 {
+    0% {
+        text-shadow: 0 8px 20px rgba(0, 150, 255, 0.2), 0 0 12px rgba(0, 150, 255, 0.3);
+        transform: scale(1.4);
+    }
+    100% {
+        text-shadow: 0 10px 30px rgba(0, 150, 255, 0.5), 0 0 20px rgba(0, 150, 255, 0.8);
+        transform: scale(1.5);
+    }
+}
+
+.save-button .fa-bookmark {
+    transition: color 0.4s ease; /* Smooth color transition */
+}
+
+.heart-effect {
+    position: absolute; /* Positioned relative to the parent div */
+    font-size: 2rem; /* Adjust size of hearts */
+    color: red;
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: auto; /* Allow clicking */
+    -webkit-user-select: none;
+    user-select: none; /* Prevent text selection */
+}
+
+@keyframes floatRandom {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--random-x), -100vh) scale(1.5); /* Random movement */
+        opacity: 0; /* Fade out */
+    }
+}
+
+/* Pop effect on click */
+.heart-effect.popped {
+    transform: scale(0);
+    opacity: 0;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #121212; /* Dark background for the entire page */
+    color: #e0e0e0; /* Light text for readability */
+}
+
+body.dark-mode table th {
+    background-color: #333; /* Dark header background for tables */
+    color: #e0e0e0; /* Light text in table headers */
+}
+
+body.dark-mode table td {
+    background-color: #1e1e1e; /* Dark background for table cells */
+    border-color: #444; /* Darker border */
+}
+
+body.dark-mode table tr:nth-child(even) {
+    background-color: #242424; /* Slightly lighter dark color for alternating rows */
+}
+
+body.dark-mode table tr:hover {
+    background-color: #333; /* Darker hover effect for table rows */
+}
+
+/* Job Card Dark Mode */
+body.dark-mode .job-card,
+body.dark-mode .saved-job-card {
+    background: rgba(50, 50, 50, 0.85); /* Dark glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Light border */
+    color: #e0e0e0; /* Light text color */
+}
+
+body.dark-mode .job-card.fullscreen {
+    background: rgba(40, 40, 40, 0.97); /* Dark background for fullscreen job card */
+}
+
+body.dark-mode .job-card-header h3,
+body.dark-mode .saved-job-card-header h3 {
+    color: #f0f0f0; /* Lighter header text */
+}
+
+body.dark-mode .job-card-header p,
+body.dark-mode .job-card-body p,
+body.dark-mode .saved-job-card-header p {
+    color: #b0b0b0; /* Lighter paragraph text */
+}
+
+/* Dark Mode Scrollbar */
+body.dark-mode .job-results::-webkit-scrollbar-thumb,
+body.dark-mode .saved-job-results::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2); /* Light scrollbar thumb */
+}
+
+body.dark-mode .job-results::-webkit-scrollbar-thumb:hover,
+body.dark-mode .saved-job-results::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4); /* Brighter on hover */
+}
+
+/* Dark Mode Loading Spinner */
+body.dark-mode .loading {
+    background: rgba(50, 50, 50, 0.2); /* Dark glass effect for loading spinner */
+}
+
+body.dark-mode .loading::before {
+    border-top: 8px solid #3498db; /* Keep loading spinner color */
+    border: 8px solid rgba(255, 255, 255, 0.3); /* Light transparent border */
+}
+
+/* Dark Mode for Job Listings and Saved Jobs Sections */
+body.dark-mode .content-main {
+    background-color: #121212; /* Dark background for the section */
+}
+
+body.dark-mode #resultsTitle, 
+body.dark-mode #savedResultsTitle {
+    color: #e0e0e0; /* Light text color for section titles */
+}
+
+body.dark-mode .job-results {
+    background-color: #1e1e1e; /* Dark background for job results container */
+}
+
+body.dark-mode .job-card,
+body.dark-mode .saved-job-card {
+    background: rgba(50, 50, 50, 0.85); /* Dark glass effect for job cards */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Light border around job cards */
+    color: #e0e0e0; /* Light text color for job cards */
+}
+
+body.dark-mode .job-card-header h3,
+body.dark-mode .saved-job-card-header h3 {
+    color: #f0f0f0; /* Light color for job card headers */
+}
+
+body.dark-mode .job-card-header p,
+body.dark-mode .saved-job-card-header p {
+    color: #b0b0b0; /* Light color for job card paragraphs */
+}
+
+/* Dark Mode Scrollbar for Job Results */
+body.dark-mode .job-results::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2); /* Light scrollbar thumb in dark mode */
+}
+
+body.dark-mode .job-results::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4); /* Brighter thumb on hover in dark mode */
+}
+
+/* Dark Mode for Saved Job Results */
+body.dark-mode .saved-job-results {
+    background-color: #1e1e1e; /* Dark background for saved job results */
+}
+
+body.dark-mode .saved-job-results::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2); /* Light scrollbar thumb in saved job results */
+}
+
+body.dark-mode .saved-job-results::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4); /* Brighter thumb on hover in saved job results */
+}
+
+    </style>
+    
+</body>
+</html>

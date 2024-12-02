@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <title>WorkNet - Login</title>
+  <link rel="stylesheet" href="/style/signin.css">
+  <script src="/scripts/redirect.js"></script>
+  <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+  <div class="topleft">
+    <a onclick="history.back()">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+  </div>
+
+  <div class="container">
+    <div class="logo">
+      <img src="/assets/worknet.png" alt="WorkNet Logo" class="logo-img tilt" data-tilt>
+    </div>
+    <div class="title">Login</div>
+    <div class="content">
+      <form id="loginForm" action="/login" method="POST">
+        <div class="input-box">
+            <span class="details">Email</span>
+            <input type="email" name="email" placeholder="Enter your email" required>
+        </div>
+        <div class="input-box">
+            <span class="details">Password</span>
+            <input type="password" name="password" placeholder="Enter your password" required minlength="8">
+        </div>
+        <div class="forgot-password">
+          <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+        </div>
+        <div id="recaptcha-container" style="display: none; text-align: center; margin-bottom: 15px;"></div> <!-- Placeholder for reCAPTCHA -->
+        <div class="button">
+          <input type="submit" value="Login">
+        </div>
+        <div class="signup-link">
+          <h5>New user? <a href="/signup">Sign-up</a></h5>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="popupModal" class="popup-modal">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <h2 id="modalTitle"></h2>
+      <p id="modalBody"></p>
+      <button id="modalButton" class="modal-button" style="display: none;"></button>
+    </div>
+  </div>
+
+  <!-- Include Vanilla Tilt JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+  <script>
+    // Initialize the tilt effect
+    VanillaTilt.init(document.querySelector(".tilt"), {
+      max: 15,
+      speed: 300,
+      glare: true,
+      "max-glare": 0.3,
+    });
+
+    document.getElementById('forgotPasswordLink').addEventListener('click', function(event) {
+      event.preventDefault();
+      const email = document.querySelector('input[name="email"]').value;
+      // Email validation
+      const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+      if (!emailPattern.test(email)) {
+        showModal("Invalid Email", "Please enter a valid email address.", "OK");
+        return;
+      }
+      if (email) {
+        document.getElementById('recaptcha-container').style.display = 'block';
+        document.getElementById('recaptcha-container').style.textAlign = 'center';
+        document.getElementById('recaptcha-container').style.marginBottom = '15px';
+        grecaptcha.render('recaptcha-container', {
+          'sitekey': '6Ldf31sqAAAAAPeuwgXeYhoID0XaG8QojQ-RxJer',
+          'callback': function(token) {
+            fetch('/forgot-password', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ email, token }), // Include the token in the request body
+            })
+            .then(response => response.json())
+            .then(data => {
+              showModal(data.modalContent.title, data.modalContent.body, data.modalContent.buttonText);
+              document.getElementById('recaptcha-container').style.display = 'none';
+              if (data.modalContent.title === 'Verification Code Sent') {
+                window.location.href = `/reset-password?email=${encodeURIComponent(email)}`;
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              showModal('Error', 'There was an error processing your request. Please try again later.', 'OK');
+              document.getElementById('recaptcha-container').style.display = 'none';
+            });
+          }
+        });
+      } else {
+        showModal('Error', 'Please enter your email address before proceeding.', 'OK');
+      }
+    });
+
+    function showModal(title, body, buttonText) {
+      const modal = document.getElementById('popupModal');
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalBody').innerText = body;
+      document.getElementById('modalButton').innerText = buttonText;
+      modal.style.display = 'block';
+
+      document.querySelector('.close-button').addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+
+      document.getElementById('modalButton').addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+    }
+  </script>
+  <script>
+    const secretKey = '<%= secretKey %>'; // Embed the secret key
+
+    // Handle form submission via JavaScript to manage redirection
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      const form = this;
+      const passwordField = form.querySelector('input[name="password"]');
+      const emailField = form.querySelector('input[name="email"]').value;
+
+      // Email validation
+      const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+      if (!emailPattern.test(emailField)) {
+        alert("Please enter a valid email address.");
+        return;
+      }
+
+      // Password validation
+      if (passwordField.value.length < 8) {
+        alert("Password must be at least 8 characters long.");
+        return;
+      }
+
+      const encryptedPassword = CryptoJS.AES.encrypt(passwordField.value, secretKey).toString();
+      passwordField.value = encryptedPassword;
+
+      fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(new FormData(form)).toString()
+      }) 
+      .then(response => response.json())
+      .then(data => {
+        if (data.message) {
+          // Create a popup message element
+          const popup = document.createElement('div');
+          popup.className = 'popup-message';
+          popup.innerHTML = `<p>${data.message}</p>`;
+          
+          // Append the popup to the body
+          document.body.appendChild(popup);
+          
+          // Remove the popup after a few seconds
+          setTimeout(() => {
+            popup.remove();
+          }, 5000); // Display for 5 seconds
+          
+          // Add CSS for the popup message
+          const style = document.createElement('style');
+          style.innerHTML = `
+            .popup-message {
+              position: fixed;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              background-color: rgba(0, 0, 0, 0.8);
+              color: white;
+              padding: 20px;
+              border-radius: 10px;
+              box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+              font-size: 1.5em;
+              text-align: center;
+              z-index: 1000;
+              animation: fadeIn 0.5s, fadeOut 0.5s 4.5s;
+            }
+            @keyframes fadeIn {
+              from { opacity: 0; }
+              to { opacity: 1; }
+            }
+            @keyframes fadeOut {
+              from { opacity: 1; }
+              to { opacity: 0; }
+            }
+          `;
+          document.head.appendChild(style);
+        }
+        if (data.userId) {
+          // Store the userId in localStorage
+          localStorage.setItem('userId', data.userId);
+          sessionStorage.setItem('userId', data.userId);
+        }
+        if (data.redirect) {
+          setTimeout(() => {
+            window.location.href = data.redirect; // Redirect based on server response
+          }, data.delay || 1000); // Delay if provided, default to 1 second
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    });
+  </script>
+</body>
+</html>

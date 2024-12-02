@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <title>WorkNet - Sign-up</title>
+    <link rel="stylesheet" href="/style/signup.css">
+    <script src="/scripts/redirect.js"></script>
+    <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <style>
+        .send-code-button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .send-code-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="topleft">
+        <a onclick="history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+    </div>
+
+    <div class="container">
+        <img src="/assets/worknet.png" alt="Worknet Logo" class="logo-img tilt" data-tilt />
+        <div class="title">Sign-up</div>
+        <div class="content">
+            <!-- Message will be displayed here -->
+            <div id="message"></div>
+            <form id="signupForm" action="/signup" method="POST">
+                <div class="user-details">
+                  <div class="input-box">
+                    <span class="details">Full Name</span>
+                    <input type="text" name="fullName" placeholder="Enter your name" required>
+                  </div>
+                  <div class="input-box">
+                    <span class="details">Username</span>
+                    <input type="text" name="username" placeholder="Enter your username" required>
+                  </div>
+                  <div class="input-box">
+                    <span class="details">Email</span>
+                    <input type="email" name="email" placeholder="Enter your email" required>
+                    <button type="button" id="sendCodeButton" class="send-code-button">Send Verification Code</button>
+                    <div id="recaptcha-container" style="display: none;"></div> <!-- Placeholder for reCAPTCHA -->
+                  </div>
+                  <div class="input-box">
+                    <span class="details">Verification Code</span>
+                    <input type="text" name="verificationCode" placeholder="Enter the verification code" required>
+                  </div>
+                  <div class="input-box">
+                    <span class="details">Phone Number</span>
+                    <input type="tel" name="phone" placeholder="Enter your number" required pattern="[0-9]{10}">
+                  </div>
+                  <div class="input-box">
+                    <span class="details">Password</span>
+                    <input type="password" name="password" placeholder="Enter your password" required minlength="8">
+                  </div>
+                  <div class="input-box">
+                    <span class="details">Confirm Password</span>
+                    <input type="password" name="confirmPassword" placeholder="Confirm your password" required minlength="8">
+                  </div>
+                </div>
+                <div class="gender-details">
+                    <input type="radio" name="gender" id="dot-1" value="Male" required>
+                    <input type="radio" name="gender" id="dot-2" value="Female" required>
+                    <input type="radio" name="gender" id="dot-3" value="Prefer not to say" required>
+                    <span class="gender-title">Gender</span>
+                    <div class="category">
+                        <label for="dot-1">
+                            <span class="dot one"></span>
+                            <span class="gender">Male</span>
+                        </label>
+                        <label for="dot-2">
+                            <span class="dot two"></span>
+                            <span class="gender">Female</span>
+                        </label>
+                        <label for="dot-3">
+                            <span class="dot three"></span>
+                            <span class="gender">Prefer not to say</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="button">
+                    <input type="submit" value="Continue" id="submitButton">
+                </div>
+                <div class="signup-link">
+                    <h5>Already have an account? <a href="/signin">Log in</a></h5>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="popupModal" class="popup-modal">
+      <div class="modal-content">
+          <span class="close-button">&times;</span>
+          <h2 id="modalTitle"></h2>
+          <p id="modalBody"></p>
+                    <button id="modalButton" class="modal-button" style="display: none;"></button>
+                </div>
+              </div>
+              <!-- Form Validation -->
+              <script>
+                document.getElementById('sendCodeButton').addEventListener('click', function() {
+                  document.getElementById('sendCodeButton').style.display = 'none';
+                  document.getElementById('recaptcha-container').style.display = 'block';
+                  grecaptcha.render('recaptcha-container', {
+                    'sitekey': '6Ldf31sqAAAAAPeuwgXeYhoID0XaG8QojQ-RxJer',
+                    'callback': function(token) {
+                      const email = document.querySelector('input[name="email"]').value;
+                      fetch('/send-verification-code', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ email, token }), // Include the token in the request body
+                      })
+                      .then(response => response.json())
+                      .then(data => {
+                        if (data.showModal) {
+                          showModal(data.modalContent.title, data.modalContent.body, data.modalContent.buttonText);
+                          // Remove the popup after a few seconds
+                          setTimeout(() => {
+                            document.getElementById('popupModal').style.display = 'none';
+                          }, 5000); // Display for 5 seconds
+                        }
+                        document.getElementById('recaptcha-container').style.display = 'none';
+                        document.getElementById('sendCodeButton').style.display = 'block';
+                      })
+                      .catch(error => {
+                        console.error('Error:', error);
+                        document.getElementById('recaptcha-container').style.display = 'none';
+                        document.getElementById('sendCodeButton').style.display = 'block';
+                      });
+                    }
+                  });
+                });
+          
+                function showModal(title, body, buttonText) {
+                  const modal = document.getElementById('popupModal');
+                  document.getElementById('modalTitle').innerText = title;
+                  document.getElementById('modalBody').innerText = body;
+                  document.getElementById('modalButton').innerText = buttonText;
+                  modal.style.display = 'block';
+          
+                  document.querySelector('.close-button').addEventListener('click', () => {
+                    modal.style.display = 'none';
+                  });
+          
+                  document.getElementById('modalButton').addEventListener('click', () => {
+                    modal.style.display = 'none';
+                  });
+                }
+              </script>
+    <!-- Password Validation -->
+    <script>
+      document.getElementById('signupForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const form = this;
+        const password = form.querySelector('input[name="password"]').value;
+        const confirmPassword = form.querySelector('input[name="confirmPassword"]').value;
+        const email = form.querySelector('input[name="email"]').value;
+        const phone = form.querySelector('input[name="phone"]').value;
+        const verificationCode = form.querySelector('input[name="verificationCode"]').value;
+
+        // Email validation
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        if (!emailPattern.test(email)) {
+            showModal("Invalid Email", "Please enter a valid email address.", "OK");
+          return;
+        }
+
+        // Phone number validation
+        const phonePattern = /^[0-9]{10}$/;
+        if (!phonePattern.test(phone)) {
+            showModal("Invalid Phone Number", "Please enter a valid 10-digit phone number.", "OK");
+          return;
+        }
+
+        // Password validation
+        if (password.length < 8) {
+            showModal("Weak Password", "Password must be at least 8 characters long.", "OK");
+          return;
+        }
+
+        if (password !== confirmPassword) {
+            showModal("Password Mismatch", "Passwords do not match. Please try again.", "OK");
+          return;
+        }
+
+        // Encrypt passwords before submission
+        const secretKey = '<%= secretKey %>';
+        const encryptedPassword = CryptoJS.AES.encrypt(password, secretKey).toString();
+        const encryptedConfirmPassword = CryptoJS.AES.encrypt(confirmPassword, secretKey).toString();
+        form.querySelector('input[name="password"]').value = encryptedPassword;
+        form.querySelector('input[name="confirmPassword"]').value = encryptedConfirmPassword;
+
+        // Proceed with form submission
+        fetch('/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams(new FormData(form)).toString()
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.message) {
+            // Create a popup message element
+            const popup = document.createElement('div');
+            popup.className = 'popup-message';
+            popup.innerHTML = `<p>${data.message}</p>`;
+
+            // Append the popup to the body
+            document.body.appendChild(popup);
+
+            // Remove the popup after a few seconds
+            setTimeout(() => {
+              popup.remove();
+            }, 5000); // Display for 5 seconds
+
+            // Add CSS for the popup message
+            const style = document.createElement('style');
+            style.innerHTML = `
+              .popup-message {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+                font-size: 1.5em;
+                text-align: center;
+                z-index: 1000;
+                animation: fadeIn 0.5s, fadeOut 0.5s 4.5s;
+              }
+              @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+              }
+              @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+              }
+            `;
+            document.head.appendChild(style);
+          }
+          
+          if (data.redirect) {
+            setTimeout(() => {
+              window.location.href = data.redirect; // Redirect based on server response
+            }, data.delay || 1000); // Delay if provided, default to 1 second
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+    </script>
+    
+    <!-- Initialize Vanilla Tilt -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+    <script>
+      VanillaTilt.init(document.querySelector(".tilt"), {
+        max: 15,
+        speed: 300,
+        glare: true,
+        "max-glare": 0.3,
+      });
+    </script>
+</body>
+</html>

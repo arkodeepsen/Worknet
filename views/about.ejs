@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WorkNet - About Us</title>
+  <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link rel="stylesheet" href="/style/style.css">
+  <script src="/scripts/index.js" defer></script>
+  <style>
+    /* Reset and Basic Styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
+      transition: background-color 0.3s, color 0.3s;
+      line-height: 1.6;
+    }
+
+    /* Dark Mode Styles */
+    body.dark-mode {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    /* Main Container */
+    .main-div {
+      width: 100%;
+      min-height: 100vh;
+      padding: 50px 20px;
+      background: linear-gradient(120deg, rgba(252,236,252,1), rgba(234,202,255,1));
+      transition: background 0.3s;
+    }
+
+    body.dark-mode .main-div {
+      background: linear-gradient(120deg, rgba(33, 33, 33, 1), rgba(51, 51, 51, 1));
+    }
+
+    /* Navbar */
+    .navbar {
+      width: 100%;
+      height: 15vh;
+      position: sticky;
+      top: 0;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2%;
+      transition: background 0.3s;
+    }
+
+    body.dark-mode .navbar {
+      background: rgba(33, 33, 33, 0.9);
+    }
+
+    .navdiv {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .logo-img {
+      width: 100px;
+      height: auto;
+      object-fit: contain;
+    }
+    .logo-img.tilt {
+      width: 150px;
+      height: auto;
+      object-fit: contain;
+    }
+
+    /* Search Bar */
+    .search-bar {
+      display: flex;
+      align-items: center;
+    }
+
+    .search-bar input {
+      width: 450px;
+      height: 40px;
+      border: 2px solid #ddd;
+      border-radius: 20px;
+      padding: 0 20px;
+      font-size: 16px;
+      color: #707070;
+      transition: border-color 0.3s;
+    }
+
+    .search-bar input:focus {
+      border-color: #7b2cbf;
+    }
+
+    .search-bar button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-left: -40px;
+      font-size: 1.2rem;
+      color: #7b2cbf;
+      transition: color 0.3s;
+    }
+
+    .search-bar button:hover i {
+      color: #5a189a;
+    }
+
+    /* Navigation Items */
+    .items {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .list-1 h3,
+    .list-2 h3 {
+      font-size: 1rem;
+      color: #7b2cbf;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .list-1 h3:hover,
+    .list-2 h3:hover {
+      color: #5a189a;
+      transform: scale(1.1);
+    }
+
+    /* Dark Mode Toggle */
+    .dark-mode-toggle {
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dark-mode-toggle i {
+      transition: all 0.3s;
+    }
+
+    /* About Page Content */
+    .content-main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px 5%;
+      text-align: center;
+    }
+
+    .content-one h1 {
+      font-size: 2.5rem;
+      color: #333;
+    }
+
+    body.dark-mode .content-one h1 {
+      color: #fff;
+    }
+
+    .content-one p, .content-one h2, .content-one ul, .content-one li {
+      margin-top: 20px;
+      color: #555;
+      text-align: left;
+      max-width: 900px;
+    }
+
+    body.dark-mode .content-one p, body.dark-mode .content-one h2, body.dark-mode .content-one ul, body.dark-mode .content-one li {
+      color: #e0e0e0;
+    }
+
+    .content-one h2 {
+      font-size: 1.8rem;
+      margin-top: 40px;
+      color: #7b2cbf;
+    }
+
+    body.dark-mode .content-one h2 {
+      color: #a9a9ff;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+    padding: 5px;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
+    }
+    .footer img {
+      width: 100px;
+      height: auto;
+      object-fit: contain;
+    }
+    .footer p {
+      text-align: center;
+      padding: 5px;
+      background: linear-gradient(to right, #c6c6ff, #6f6fff, #0000cd, #2fffe7, #640082, #992be2);
+              -webkit-background-clip: text;
+              background-clip: text;
+              color: transparent;
+    }
+    
+    body.dark-mode .footer {
+      background-color: #222;
+    }
+    /* Add this CSS to your existing stylesheet */
+.search-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f4ddfd;
+  cursor: pointer;
+  text-decoration: none; /* Remove underline from link */
+  color: inherit; /* Inherit text color */
+  margin-right: -140px;
+}
+
+.search-bar .search-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  background: transparent;
+  flex: 1;
+}
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(31, 31, 31, 0.5);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+  </style>
+  <script>
+    // Toggle dark mode
+    document.addEventListener('DOMContentLoaded', function() {
+      const darkModeToggle = document.getElementById('darkModeToggle');
+      const body = document.body;
+
+      darkModeToggle.addEventListener('click', function() {
+        body.classList.toggle('dark-mode');
+      });
+    });
+    // Check if userId is stored in sessionStorage or localStorage
+    window.onload = function() {
+      const sessionUserId = sessionStorage.getItem('userId');
+      const localUserId = localStorage.getItem('userId');
+      let userId = sessionUserId || localUserId;
+
+      // If userId is 'null' or missing, treat it as logged out
+      if (userId === 'null' || !userId) {
+          userId = null;
+          // Hide the dropdown menu if not logged in
+          document.getElementById('maindropdownMenu').style.display = 'none';
+      }
+    }
+  </script>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+      <div class="navdiv">
+        <div class="logo hidden">
+          <a href="/index"><img src="/assets/worknet.png" alt="WorkNet Logo" class="logo-img tilt" data-tilt data-tilt-scale="1.1" data-tilt-glare="true" data-tilt-max-glare="0.5"></a>
+          <a href="https://rajasthan.gov.in/"><img src="/assets/logo.png" alt="Logo" class="logo-img"></a>
+        </div>
+      </a>  
+      <!--<a href="/main" class="search-bar">
+        <div class="search-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div>
+        <input type="text" placeholder="Search for internships, jobs and more.">
+      </a>-->
+       
+      <div class="items hidden">
+        <div class="list-1" onclick="window.location.href='/home';"><h3><i class="fa fa-home"></i> Home</h3></div>
+        <div class="list-2" onclick="window.location.href='/about';"><h3><i class="fa fa-info-circle"></i> About Us</h3></div>
+        <div id="darkModeToggle" class="dark-mode-toggle">
+          <i id="sun-icon" class="fa fa-sun"></i>
+          <i id="moon-icon" class="fa fa-moon"></i>
+      </div>      
+      <!-- Profile Section -->
+<div class="profile-link" id="profileToggle">
+  <!-- Username with Sliding Effect -->
+  <span id="username-small">Username</span>
+
+  <!-- Profile Picture with onclick to show dropdown -->
+  <img id="profile-pic-small" class="profile-pic-small" src="/assets/default.jpg" alt="Profile Picture" onclick="toggleDropdown()">
+</div>
+  <!-- Dropdown Menu -->
+  <div id="maindropdownMenu" class="dropdown-menu">
+    <ul>
+      <li><a href="/dashboard">Dashboard</a></li>
+      <li><a href="#" onclick="logout()">Logout</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- About Content -->
+    <div class="main-div">
+      <div class="content-main">
+        <div class="content-one hidden">
+          <h1 class="hidden-2">About WorkNet</h1>
+          <p class="hidden-2">An Interactive AI Powered Job/Internship and Career Guidance Platform for Students and Working Professionals.</p>
+          <h2 class="hidden-2">Project Overview</h2>
+          <p class="hidden-2">
+            The Interactive Job and Internship Platform for Technical Education aims to bridge the gap between technical education students and the job market. By leveraging advanced technology and providing essential career resources, this platform enhances the employment prospects of students and recent graduates in technical fields.
+          </p class="hidden-2">
+          <h2 class="hidden-2">Why This Project?</h2>
+          <p class="hidden-2">
+            Technical education students often face challenges finding job and internship opportunities that match their skills and career goals. Our platform offers tailored solutions to streamline the job search and provide targeted support.
+          </p>
+            <h2 class="hidden-2">Who This Project Will Help?</h2>
+            <ul>
+            <li class="hidden-2">Students and Recent Graduates</li>
+            <li class="hidden-2">Educational Institutions</li>
+            <li class="hidden-2">Employers</li>
+            </ul>
+            <h2 class="hidden-2">Main Features</h2>
+            <ul>
+            <li class="hidden-2">Job Searching</li>
+            <li class="hidden-2">AI-Based Job Matching</li>
+            <li class="hidden-2">Counselling and Guidance</li>
+            <li class="hidden-2">Resume Building Tools</li>
+            <li class="hidden-2">Interview Preparation</li>
+            <li class="hidden-2">Company Reviews and Ratings</li>
+            <li class="hidden-2">Real-time Notifications</li>
+            </ul>
+            <h2 class="hidden-2">Additional Features</h2>
+            <ul>
+            <li class="hidden-2">Personalized Career Paths</li>
+            <li class="hidden-2">Networking Opportunities</li>
+            <li class="hidden-2">Skill Assessment Tests</li>
+            <li class="hidden-2">Internship Opportunities</li>
+            <li class="hidden-2">Mentorship Programs</li>
+            <li class="hidden-2">Webinars and Workshops</li>
+            </ul>
+          </ul>
+          <h2 class="hidden-2">Conclusion</h2>
+          <p class="hidden-2">
+            This platform revolutionizes how technical education students approach their job search and career planning, offering a tailored, efficient, and supportive experience.
+          </p>
+          <h2 class="hidden-2">Our Team</h2>
+          <p class="hidden-2">
+            Arkodeep Sen & Samrat Dalal
+          </p>
+        </div>
+      </div>
+    </div>
+    <script src="/scripts/index.js" defer></script>
+    
+    <!--<script src="https://cdn.botpress.cloud/webchat/v2.1/inject.js"></script>
+    <script src="https://mediafiles.botpress.cloud/0cf3e869-0cf5-4214-b906-7bf2c102effb/webchat/v2.1/config.js"></script>-->
+    <!-- Footer -->
+    <div class="footer hidden-3">
+        <img src="/assets/worknet.png" alt="Team" class="logo-img">
+      <p>WorkNet &copy; 2024. All Rights Reserved.</p>
+    </div>
+    <script src="./scripts/chatbot.js"></script>
+</body>
+</html>

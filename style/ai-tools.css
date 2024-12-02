@@ -1,0 +1,135 @@
+body {
+    background-color: #121212;
+    color: #ffffff;
+    font-family: "M PLUS Rounded 1c", sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    position: relative;
+}
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+header {
+    text-align: center;
+    padding: 20px;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #1f1f1f;
+    border-radius: 10px;
+}
+
+nav img {
+    height: 40px;
+    cursor: pointer;
+}
+
+.profile img {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.title {
+    font-size: 2.5em;
+    background: linear-gradient(to right, #5e5ebf, #6f6fff, #0000cd, #4b2fff, #640082, #992be2);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.greeting {
+    font-size: 5em;
+    margin-top: 10px;
+}
+
+.username {
+    font-weight: bold;
+    background: linear-gradient(to right, #9b9bff, #ff4500);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;   
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+section {
+    background-color: #1f1f1f;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px;
+    width: 100%;
+    height: auto;
+    max-width: 1200px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+section:hover {
+    transform: scale(1.05);
+}
+
+section img {
+    width: 100%;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+footer {
+    text-align: center;
+    padding: 10px;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+footer p {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(to right, #c6c6ff, #6f6fff, #0000cd, #2fffe7, #640082, #992be2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+}
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(31, 31, 31, 0.5);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.7);
+}

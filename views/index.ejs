@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> WorkNet - Government Of Rajasthan </title>
+  <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link rel="stylesheet" href="/style/style.css">
+  <link rel="stylesheet" href="/style/mouse.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+  <script src="/scripts/index.js" defer></script>
+  <script>
+    // Initialize the tilt effect
+    VanillaTilt.init(document.querySelector(".tilt"), {
+      max: 15,
+      speed: 300,
+      glare: true,
+      "max-glare": 0.3,
+    });
+  </script>  
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+      <div class="navdiv">
+        <div class="logo hidden">
+            <!-- Display both icons side by side -->
+            <a href="/index"><img src="/assets/worknet.png" alt="WorkNet Logo" class="logo-img tilt" data-tilt data-tilt-scale="1.1" data-tilt-glare="true" data-tilt-max-glare="0.5"></a>
+            <a href="https://rajasthan.gov.in/"><img src="/assets/logo.png" alt="Logo" class="logo-img"></a>
+        </div>
+        
+        <!-- Navigation Items -->
+        <div class="items hidden">
+            <div class="list-1" onclick="window.location.href='/home';"><h3><i class="fa fa-home"></i> Home</h3></div>
+            <div class="list-2" onclick="window.location.href='/about';"><h3><i class="fa fa-info-circle"></i> About Us</h3></div>
+            
+            <div id="darkModeToggle" class="dark-mode-toggle">
+              <i id="sun-icon" class="fa fa-sun"></i>
+              <i id="moon-icon" class="fa fa-moon"></i>
+          </div> 
+            <!-- Search Bar 
+        <div class="search-bar">
+          <input class="user-input" type="search" placeholder="Search" required />
+          <a href="/main"><button type="submit"><i class="fa fa-search" aria-hidden="true"></i></button></a>
+        </div>-->
+          
+            <button class="submit-btn">Login / Sign-up</button>
+        </div>
+      </div>
+    </div>
+
+    
+    <!-- Logos Slider -->
+    <section class="logo-slider">
+      <div class="slider-track hidden">
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" class="logo-img apple">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" class="logo-img">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" class="logo-img microsoft">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" class="logo-img">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" alt="IBM" class="logo-img">
+        </div>
+        <!-- Repeat logos to create seamless sliding effect -->
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" class="logo-img apple">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" class="logo-img">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" class="logo-img microsoft">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" class="logo-img">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" alt="IBM" class="logo-img">
+        </div>
+        <!-- Repeat logos to create seamless sliding effect -->
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" class="logo-img apple">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" class="logo-img">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" class="logo-img microsoft">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" class="logo-img">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" alt="IBM" class="logo-img">
+        </div>
+        <!-- Repeat logos to create seamless sliding effect -->
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" class="logo-img apple">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" class="logo-img">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" class="logo-img microsoft">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" class="logo-img">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" alt="IBM" class="logo-img">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" class="logo-img apple">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" class="logo-img">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" class="logo-img microsoft">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" class="logo-img">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" alt="IBM" class="logo-img">
+        </div>
+        <!-- Repeat logos to create seamless sliding effect -->
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" class="logo-img apple">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" class="logo-img">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" class="logo-img microsoft">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" class="logo-img">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" alt="IBM" class="logo-img">
+        </div>
+        <!-- Repeat logos to create seamless sliding effect -->
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" class="logo-img apple">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" class="logo-img">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" class="logo-img microsoft">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" class="logo-img">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" alt="IBM" class="logo-img">
+        </div>
+        <!-- Repeat logos to create seamless sliding effect -->
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" class="logo-img apple">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" class="logo-img">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" class="logo-img microsoft">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" class="logo-img">
+        </div>
+        <div class="slide">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" alt="IBM" class="logo-img">
+        </div>
+      </div>
+    </section>
+    <!-- Main Content -->
+     <section>
+    <div class="content-main">
+      <div class="content-one hidden">
+        <h1>Start, Switch Or Advance</h1>
+        <div class="text-inner">
+          <div class="inner-1"><h1>your</h1></div>
+          <div class="inner-2"><h1>career</h1></div>
+        </div>
+        <h3>Explore internships and job opportunities to kickstart your career</h3>
+        <h3>your way to the next level</h3>
+        <a href="/signup"><button class="cn"><h2>Sign Up</h2></button></a>
+      </div>
+      <div class="image hidden-2">
+        <img src="https://media.foundit.in/trex/public/default/images/career-services/certification/CertificationCoursesHero.svg" alt="Career image">
+      </div>
+    </div>
+  </div>
+  </section>
+  
+  <script>
+    // Check if userId is stored in sessionStorage or localStorage
+    const sessionUserId = sessionStorage.getItem('userId');
+    const localUserId = localStorage.getItem('userId');
+
+    // Log the current status of userId
+    console.log('Current userId from sessionStorage:', sessionUserId);
+    console.log('Current userId from localStorage:', localUserId);
+
+    // Use userId from sessionStorage first, fallback to localStorage
+    let userId = sessionUserId || localUserId;
+
+    // If userId is 'null' or missing, treat it as logged out
+    if (userId === 'null' || !userId) {
+        userId = null;
+    }
+
+    console.log('Final userId used for logic:', userId);
+
+    // DOM manipulation on page load
+    window.onload = function () {
+      const loginButton = document.querySelector('.submit-btn');
+      const mainBodyButton = document.querySelector('.cn');
+      const navbarHome = document.querySelector('.list-1 h3');
+
+      if (userId) {  // Check if userId exists and is valid
+        console.log('User is logged in with userId:', userId);
+
+        // Change login button to logout
+        loginButton.textContent = "Logout";
+        loginButton.onclick = function() {
+          // Clear userId from both sessionStorage and localStorage to simulate logout
+          sessionStorage.removeItem('userId');
+          localStorage.removeItem('userId');
+          window.location.reload();  // Refresh the page to reflect logged-out state
+        };
+
+        // Change Sign-up button to Dashboard button
+        mainBodyButton.innerHTML = "<h2>Dashboard</h2>";
+        mainBodyButton.parentNode.href = "/dashboard";
+
+        // Change Home to Job Portal in the navbar
+        navbarHome.innerHTML = '<i class="fa fa-briefcase"></i> Job Portal';
+        navbarHome.parentNode.onclick = function() {
+          window.location.href = "/main";
+        };
+      } else {
+        console.log('User is not logged in. userId is missing or null.');
+        // Set login button functionality to redirect to sign-in page
+        loginButton.textContent = "Login / Sign-up";
+        loginButton.onclick = function() {
+          window.location.href = "/signin";
+        };
+        // Reset Sign-up button and Home button for logged-out state
+        mainBodyButton.innerHTML = "<h2>Sign Up</h2>";
+        mainBodyButton.parentNode.href = "/signup";
+
+        navbarHome.innerHTML = '<i class="fa fa-home"></i> Home';
+        navbarHome.parentNode.onclick = function() {
+          window.location.href = "/home";
+        };
+      }
+    };
+</script>
+<!--<script src="https://cdn.botpress.cloud/webchat/v2.1/inject.js"></script>
+<script src="https://mediafiles.botpress.cloud/0cf3e869-0cf5-4214-b906-7bf2c102effb/webchat/v2.1/config.js"></script>-->
+   <!-- Footer -->
+<footer class="hidden-3">
+  <p>WorkNet &copy; 2024. All Rights Reserved.</p>
+</footer>
+<script src="./scripts/chatbot.js"></script>
+</body>
+</html>

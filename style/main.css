@@ -1,0 +1,192 @@
+/* Basic Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Search Container */
+.search-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Full viewport height */
+    position: relative; /* For positioning the loading spinner */
+}
+
+/* Results Title */
+#resultsTitle {
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Job Results Container */
+.job-results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 20px;
+    background: #fafafa;
+    border-radius: 12px;
+    height: 100vh; /* Full viewport height */
+    scroll-behavior: smooth;
+}
+
+/* Job Card Styling */
+.job-card {
+    background: rgba(255, 255, 255, 0.85); /* Glass effect */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 300px;
+    width: 100%;
+    box-sizing: border-box;
+    cursor: pointer;
+    position: relative;
+}
+
+/* Hover effect for job cards */
+.job-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Fullscreen Job Card */
+.job-card.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.97);
+    z-index: 1000;
+    margin: 0;
+    border-radius: 0;
+    padding: 40px;
+    overflow-y: auto;
+    box-shadow: none;
+    transition: all 0.4s ease-in-out;
+}
+
+/* Fullscreen Content - Adjusted to fit large view */
+.job-card.fullscreen h3 {
+    font-size: 2rem;
+}
+
+.job-card.fullscreen p {
+    font-size: 1.2rem;
+}
+
+/* Close Button */
+.job-card .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    color: #333;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Add some close button hover effect */
+.job-card .close-btn:hover {
+    color: #ff0000;
+}
+
+/* Card Header and Body */
+.job-card-header {
+    margin-bottom: 15px;
+}
+
+.job-card-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.job-card-header p, .job-card-body p {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: #555; /* Darker grey text for readability */
+}
+
+/* Glassmorphism scrollbar */
+.job-results::-webkit-scrollbar {
+    width: 12px;
+}
+
+.job-results::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.job-results::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+.job-results::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Advanced Loading Animation */
+.loading {
+    position: fixed; /* Fixed positioning to stay in place */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2); /* Glass effect for loading spinner */
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999; /* Ensure it's above other content */
+    --duration: 2s; /* Default duration if not set */
+}
+
+.loading::before {
+    content: "";
+    width: 60px;
+    height: 60px;
+    border: 8px solid rgba(255, 255, 255, 0.3);
+    border-top: 8px solid #3498db;
+    border-radius: 50%;
+    animation: spin linear infinite;
+    animation-duration: var(--duration);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+    .job-card {
+        max-width: 100%;
+    }
+}

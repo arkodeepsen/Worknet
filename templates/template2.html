@@ -1,0 +1,196 @@
+<!-- Creative Sidebar Template -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Sidebar Resume</title>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+        }
+        .sidebar {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 20px;
+            width: 250px;
+        }
+        .main {
+            padding: 20px;
+            width: 100%;
+        }
+        .profile-picture {
+            display: none;
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            margin-bottom: 15px;
+        }
+        .skills ul {
+            list-style: none;
+            padding: 0;
+        }
+        .skills li {
+            background-color: #3498db;
+            color: #fff;
+            padding: 5px 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .optional-section {
+            display: none;
+        }
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(31, 31, 31, 0.5);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+    <script src="scripts/download.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <% if (resume.enableProfilePic === 'true') { %>
+                <img class="profile-picture" src="<%= profilePicture %>" alt="Profile Picture" style="display: block;">
+            <% } %>
+            <h1><%= resume.firstName %> <%= resume.lastName %></h1>
+            <p>Email: <%= resume.email %> <br> Phone: <%= resume.contact %></p>
+        </div>
+        <div class="main">
+            <div class="summary">
+                <h2>Professional Summary</h2>
+                <p><%- resume.summary %></p>
+            </div>
+
+            <div class="experience">
+                <h2>Professional Experience</h2>
+                <% experience.forEach(exp => { %>
+                <div style="margin-bottom: 50px;">
+                    <p><img src="https://www.google.com/s2/favicons?domain=<%= exp.employer %>.com" 
+                        alt="<%= exp.employer %>" style="width: 16px; height: 16px; margin-right: 8px;"><strong><%= exp.jobTitle %></strong> - <%= exp.employer %>, <%= exp.location %> 
+                    <strong>(<%= exp.startDate %> - <%= exp.currentWork === 1 ? 'Present' : exp.endDate %>)</strong></p>
+                    <div>
+                        <%- exp.responsibilities %>
+                    </div>
+                </div>
+                <% }) %>
+            </div>
+
+            <div class="education">
+                <h2>Education</h2>
+                <% education.forEach(edu => { %>
+                <div style="margin-bottom: 50px;">
+                    <p><strong><%= edu.degree %> (<%= edu.specialization %>)</strong><br></p>
+                    <p><%= edu.institution %><br></p>
+                    <p>Graduation Year: <%= edu.graduationYear %></p>
+                </div>
+                <% }) %>
+            </div>
+            
+            <div class="skills">
+                <h2>Skills</h2>
+                <ul>
+                    <% skills.forEach(skill => { %>
+                        <li><%= skill %></li>
+                    <% }) %>
+                </ul>
+            </div>
+
+            <% if (websites.length > 0) { %>
+                <div class="optional-section websites" style="display: block;">
+                    <h2>Websites, Portfolios, Profiles</h2>
+                    <% websites.forEach(site => { %>
+                        <p style="display: flex; align-items: center;">
+                            <img src="https://www.google.com/s2/favicons?domain=<%= site.websiteName %>.com" 
+                                 alt="<%= site.websiteName %>" style="width: 16px; height: 16px; margin-right: 8px;">
+                            <strong><a href="<%= site.websiteLink %>" style="color: #007bff; text-decoration: none;">
+                                <%= site.websiteName %></a></strong>
+                        </p>
+                    <% }) %>
+                </div>
+            <% } %>
+
+            <% if (certifications.length > 0) { %>
+                <div class="optional-section certifications" style="display: block;">
+                    <h2>Certifications</h2>
+                    <% certifications.forEach(cert => { %>
+                        <p style="display: flex; align-items: center;">
+                            <img src="https://www.google.com/s2/favicons?domain=<%= cert.issuingOrg %>.com" 
+                                 alt="<%= cert.issuingOrg %>" style="width: 16px; height: 16px; margin-right: 8px;">
+                            <strong><a href="<%= cert.certificationLink %>" 
+                                       style="color: #007bff; text-decoration: none; margin-right: 8px;">
+                                <%= cert.certificationName %></a>- <%= cert.issuingOrg %></strong> 
+                        </p>
+                        <p>Issued: <%= cert.issueDate %><br>
+                        Credential ID: <%= cert.credentialId %></p>
+                    <% }) %>
+                </div>
+            <% } %>
+
+            <% if (languages.length > 0) { %>
+                <div class="optional-section languages" style="display: block;">
+                    <h2>Languages</h2>
+                    <% languages.forEach(lang => { %>
+                        <p><strong><%= lang.languageName %></strong><br>
+                        Proficiency: <%= lang.proficiencyLevel %></p>
+                    <% }) %>
+                </div>
+            <% } %>
+
+            <% if (accomplishments.length > 0) { %>
+                <div class="optional-section accomplishments" style="display: block;">
+                    <h2>Accomplishments</h2>
+                    <% accomplishments.forEach(acc => { %>
+                        <p><strong><%= acc.accomplishmentName %></strong><br>
+                        <%= acc.accomplishmentOrg %></p>
+                    <% }) %>
+                </div>
+            <% } %>
+
+            <% if (affiliations.length > 0) { %>
+                <div class="optional-section affiliations" style="display: block;">
+                    <h2>Affiliations</h2>
+                    <% affiliations.forEach(aff => { %>
+                        <p><strong><%= aff.membershipType %></strong><br>
+                        <%= aff.affiliationOrg %></p>
+                    <% }) %>
+                </div>
+            <% } %>
+
+            <% if (additionalInfo.length > 0) { %>
+                <div class="optional-section additional-info" style="display: block;">
+                    <h2>Hobbies & Interests</h2>
+                    <% additionalInfo.forEach(info => { %>
+                        <p><strong><%= info.hobbies %></strong><br>
+                        <%= info.additionalInfo %></p>
+                    <% }) %>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</body>
+</html>

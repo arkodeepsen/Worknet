@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Background Removal & Enhancement</title>
+    <link rel="stylesheet" href="/style/ai-tools.css">
+    <script src="/scripts/lib/requestAnimFrame.js"></script>
+    <script src="/scripts/index.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: linear-gradient(to right, #0000cd, #2ffcff, #820043, #2ba8e2);
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        nav img {
+            height: 50px;
+        }
+        .profile img {
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .title {
+            margin: 0;
+            font-size: 2em;
+            background: linear-gradient(to right, #0000cd, #2ffcff, #820043, #2ba8e2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .greeting {
+            margin: 0;
+            font-size: 1.2em;
+            background: linear-gradient(to right, #0000cd, #2ffcff, #820043, #2ba8e2);
+            border-radius: 8px;
+        }
+        main {
+            padding: 20px;
+        }
+        #upload-section, #result-section, #history-section {
+            background: transparent;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+        #upload-section button, #upload-section input {
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #upload-section button:hover {
+            background-color: rgba(244, 244, 244, 0.94);
+            transform: scale(1.05);
+            transition: transform 0.2s ease-in-out;
+        }
+        #upload-section h2, #result-section h2, #history-section h2 {
+            margin-top: 0;
+        }
+        #file-input {
+            margin-bottom: 10px;
+        }
+        #image-preview {
+            white-space: pre-wrap;
+            color: white;
+        }
+        #history-cards {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+        .history-card {
+            flex: 0 0 auto;
+            width: 150px;
+            margin: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 8px;
+            text-align: center;
+            padding: 10px;
+            border: 2px solid transparent;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: border-color 0.3s ease-in-out;
+        }
+        .history-card:hover {
+            border-color: rgba(0, 255, 255, 0.8);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+        .history-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .history-card button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: linear-gradient(to right, #0000cd, #2ffcff, #820043, #2ba8e2);
+            border: 2px solid transparent;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .history-card button:hover {
+            background-color: rgba(244, 244, 244, 0.1);
+            border-color: rgba(0, 255, 255, 0.8);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+        .arrow {
+            cursor: pointer;
+            font-size: 2em;
+            user-select: none;
+        }
+        .arrow-left {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .arrow-right {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .text-color {
+            background: linear-gradient(to right, #820043, #2ba8e2, #5637c7, #2ffcff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/home"><img src="/assets/worknet.png" alt="Worknet Logo"></a>
+            <div class="profile">
+                <img id="profile-pic-small" src="/assets/default.jpg" alt="Profile Picture" onclick="window.location.href='/dashboard'">
+            </div>
+        </nav>
+        <h1 class="title">AI Image Background Removal & Enhancement</h1>
+        <h2 class="greeting" onclick="window.location.href='/ai-tools'">WorkNet Advanced AI Tools</h2>
+        <h2 class="text-color">Welcome, <span id="firstname" class="username"></span></h2>
+    </header>
+    <main>
+        <section id="upload-section">
+            <h2 class="text-color">Upload Image</h2>
+            <input type="file" id="file-input" accept="image/*">
+            <button id="upload-button">Upload</button>
+        </section>
+        <section id="result-section" style="display:none;">
+            <h2 class="text-color">Enhanced Image</h2>
+            <div id="image-preview"></div>
+        </section>
+        <section id="history-section">
+            <h2 class="text-color">Previous Generations</h2>
+            <div class="arrow arrow-left" onclick="scrollHistory(-1)">&#9664;</div>
+            <div id="history-cards"></div>
+            <div class="arrow arrow-right" onclick="scrollHistory(1)">&#9654;</div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 WorkNet. All rights reserved.</p>
+    </footer>
+    <canvas id="canvas"></canvas>
+    <script src="/scripts/canvas.js"></script>
+    <script>
+        // Ensure the user is logged in, otherwise redirect to home
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+            window.location.href = '/home';
+        } else {
+            // Fetch and display the username and profile picture
+            fetch(`/get-user-details/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        const username = data.firstName || 'User';
+                        const profilePicture = data.profilePicture && data.profilePicture !== 'null' 
+                            ? data.profilePicture 
+                            : '/assets/default-profile-picture.jpg';
+                        document.getElementById('firstname').textContent = username + '!';
+                        document.getElementById('profile-pic-small').src = profilePicture;
+                    } else {
+                        console.error('No user details found.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching user details:', error);
+                });
+        }
+
+        function scrollHistory(direction) {
+            const historyCards = document.getElementById('history-cards');
+            const scrollAmount = 200;
+            historyCards.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+        }
+    </script>
+    <script src="/scripts/image-ai.js"></script>
+</body>
+</html>

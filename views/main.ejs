@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internship Portal - Dashboard</title>
+    <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="stylesheet" href="/style/main.css">
+    <link rel="stylesheet" href="/style/style.css">
+    <style>
+        .search-bar {
+            margin-left: 5%;
+        }
+        /* Dark Mode for Job Listings and Saved Jobs Sections */
+body.dark-mode .content-main {
+    background-color: #121212; /* Dark background for the section */
+}
+
+body.dark-mode #resultsTitle, 
+body.dark-mode #savedResultsTitle {
+    color: #e0e0e0; /* Light text color for section titles */
+}
+
+body.dark-mode .job-results {
+    background-color: #1e1e1e; /* Dark background for job results container */
+}
+
+body.dark-mode .job-card,
+body.dark-mode .saved-job-card {
+    background: rgba(50, 50, 50, 0.85); /* Dark glass effect for job cards */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Light border around job cards */
+    color: #e0e0e0; /* Light text color for job cards */
+}
+
+body.dark-mode .job-card-header h3,
+body.dark-mode .saved-job-card-header h3 {
+    color: #f0f0f0; /* Light color for job card headers */
+}
+
+body.dark-mode .job-card-header p,
+body.dark-mode .saved-job-card-header p {
+    color: #b0b0b0; /* Light color for job card paragraphs */
+}
+
+/* Dark Mode Scrollbar for Job Results */
+body.dark-mode .job-results::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2); /* Light scrollbar thumb in dark mode */
+}
+
+body.dark-mode .job-results::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4); /* Brighter thumb on hover in dark mode */
+}
+
+/* Dark Mode for Saved Job Results */
+body.dark-mode .saved-job-results {
+    background-color: #1e1e1e; /* Dark background for saved job results */
+}
+
+body.dark-mode .saved-job-results::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2); /* Light scrollbar thumb in saved job results */
+}
+
+body.dark-mode .saved-job-results::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4); /* Brighter thumb on hover in saved job results */
+}
+/* Pagination Container */
+.pagination {
+    display: flex;
+    justify-content: center; /* Center align */
+    align-items: center;
+    position: fixed; /* Fixed positioning to stay at the bottom */
+    bottom: 20px; /* Distance from the bottom of the screen */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Center horizontally */
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.85); /* Glass effect */
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Ensure it's above other content */
+}
+
+/* Pagination Buttons */
+.page-btn {
+    background-color: #3498db; /* Primary color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.page-btn:disabled {
+    background-color: #ccc; /* Disabled state color */
+    cursor: not-allowed;
+}
+
+.page-btn:hover:not(:disabled) {
+    background-color: #2980b9; /* Hover state color */
+}
+
+/* Page Info */
+#pageInfo {
+    font-size: 16px;
+    margin: 0 10px;
+    color: #333;
+}
+/* Ensure the search input can contain the image and cursor */
+.search-bar {
+    position: relative;
+}
+
+.user-input {
+    padding-right: 40px; /* Adjust padding to make space for the search icon */
+    padding-left: 40px; /* Adjust padding to make space for the placeholder text */
+}
+
+.user-input::placeholder {
+    color: transparent; /* Hide the default placeholder text */
+}
+
+.placeholder-container {
+    position: absolute;
+    top: 50%;
+    left: 10px; /* Adjust to position the placeholder text correctly */
+    transform: translateY(-50%);
+    pointer-events: none; /* Ensure the container doesn't interfere with input */
+    display: flex;
+    align-items: center;
+    white-space: nowrap; /* Prevent text wrapping */
+    color: #888; /* Set the placeholder text color */
+}
+
+/* Blinking Cursor */
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.blinking-cursor {
+    font-weight: bold;
+    font-size: 20px;
+    color: #888;
+    animation: blink 1s infinite;
+}
+
+/* Placeholder Text Styling */
+.placeholder-text {
+    display: inline;
+    font-size: 16px;
+    color: #888;
+}
+
+.placeholder-image {
+    vertical-align: middle;
+    width: 20px; /* Adjust the width as needed */
+    height: 20px; /* Adjust the height as needed */
+    margin-right: 5px; /* Adjust margin to position the image correctly */
+}
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+    <script src="/scripts/jobs.js" defer></script>
+    <script src="/scripts/index.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script> <!-- CSV parser library -->
+    <script>// Check if userId is stored in sessionStorage or localStorage
+        window.onload = function() {
+            const sessionUserId = sessionStorage.getItem('userId');
+            const localUserId = localStorage.getItem('userId');
+            let userId = sessionUserId || localUserId;
+    
+            // If userId is 'null' or missing, treat it as logged out
+            if (userId === 'null' || !userId) {
+                userId = null;
+                // Hide the dropdown menu if not logged in
+                document.getElementById('maindropdownMenu').style.display = 'none';
+                setTimeout(() => {
+                    window.location.href = '/index';
+                }, 1000);
+            }}</script>
+</head>
+<body>
+           <!-- Navbar -->
+<header class="navbar">
+    <div class="navdiv">
+        <div class="logo hidden">
+            <a href="/index"><img src="/assets/worknet.png" alt="WorkNet Logo" class="logo-img tilt" data-tilt data-tilt-scale="1.1" data-tilt-glare="true" data-tilt-max-glare="0.5"></a>
+            <a href="https://rajasthan.gov.in/"><img src="/assets/logo.png" alt="Logo" class="logo-img"></a>
+        </div>
+        <!-- Search Bar -->
+        <!-- Search Bar -->
+        <div class="search-bar hidden">
+            <input id="searchInput" class="user-input" type="search" placeholder="">
+            <div id="placeholderContainer" class="placeholder-container"></div>
+            <button id="searchButton" type="button" title="Search"><i class="fa fa-search" aria-hidden="true"></i></button>
+        </div>
+
+        <!-- User Profile Button -->
+        <div class="items hidden">
+            <!-- Dark Mode Toggle -->
+            <div id="darkModeToggle" class="dark-mode-toggle">
+                <i id="sun-icon" class="fa fa-sun"></i>
+                <i id="moon-icon" class="fa fa-moon"></i>
+            </div>
+            <!-- Profile Section -->
+<div class="profile-link" id="profileToggle">
+    <!-- Username with Sliding Effect -->
+    <span id="username-small">Username</span>
+  
+    <!-- Profile Picture with onclick to show dropdown -->
+    <img id="profile-pic-small" class="profile-pic-small" src="/assets/default.jpg" alt="Profile Picture" onclick="toggleDropdown()">
+  </div>
+    <!-- Dropdown Menu -->
+    <div id="maindropdownMenu" class="dropdown-menu">
+      <ul>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="#" onclick="logout()">Logout</a></li>
+      </ul>
+    </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Welcome Section -->
+    <section class="hero">
+        <div class="content-one hidden">
+            <h1></h1>
+            <div class="text-inner">
+                <div class="inner-1"><h1>find</h1></div>
+                <div class="inner-2"><h1>opportunities</h1></div>
+            </div>
+            <h3>Search and apply for the best internships tailored to your profile.</h3>
+        </div>
+        <div class="image hidden-2">
+            <img src="https://media.foundit.in/trex/public/default/images/career-services/certification/CertificationCoursesHero.svg" alt="Career image">
+        </div>
+    </section>
+
+    <!-- Recommended Internships Section -->
+<section class="job-listings content-main">
+    <div class="search-container hidden">
+        <h2 id="resultsTitle">Jobs and Internships</h2>
+        <div id="jobResults" class="job-results"></div>
+    </div> 
+    <div id="pagination" class="pagination hidden-2">
+        <button id="prevPage" class="page-btn" disabled>Previous</button>
+        <span id="pageInfo"></span>
+        <button id="nextPage" class="page-btn">Next</button>
+    </div>   
+</section>
+
+<!-- Saved Jobs Section -->
+<section class="job-listings content-main">
+    <div class="search-container hidden">
+        <h2 id="savedResultsTitle">Saved Jobs</h2>
+        <div id="savedJobResults" class="job-results"></div>
+    </div>    
+</section>
+
+    <!-- All Jobs List Section 
+    <section class="company-listings content-main">
+        <h2>All Jobs List</h2>
+        <div class="scroll-container">
+            <table class="items">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Job Title</th>
+                        <th>Location</th>
+                        <th>Experience</th>
+                        <th>Pay Rate</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>-->
+                    <!-- Dynamic content populated by JavaScript 
+                </tbody>
+            </table>
+        </div>
+    </section>-->
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const userId = localStorage.getItem('userId'); // Retrieve userId from localStorage
+        
+            if (!userId) {
+                console.error('User ID not found in localStorage');
+                return;
+            }
+            
+            // Function to display saved jobs
+            function displaySavedJobs(jobs) {
+                const savedJobResults = document.getElementById('savedJobResults');
+                savedJobResults.innerHTML = ''; // Clear previous job results
+            
+                console.log('Saved Jobs Array:', jobs); // Debugging to see the full jobs array
+            
+                if (!Array.isArray(jobs) || jobs.length === 0) {
+                    savedJobResults.innerHTML = '<p>No saved jobs found.</p>';
+                    return;
+                }
+            
+                jobs.forEach((job) => {
+                    console.log('Processing saved job:', job); // Check each saved job object
+            
+                    const jobCard = document.createElement('div');
+                    jobCard.classList.add('job-card');
+                    jobCard.setAttribute('data-id', job.key_id); // Set data-id attribute with key_id
+        
+                let skillsArray = [];
+                if (job.job_skills && typeof job.job_skills === 'string') {
+                    try {
+                        skillsArray = JSON.parse(job.job_skills.replace(/'/g, '"'));
+                    } catch (e) {
+                        console.error('Error parsing job_skills:', e);
+                    }
+                }
+            
+                    jobCard.innerHTML = `
+                        <div class="job-card-header">
+                        <h3>${job.job_title || 'N/A'}</h3>
+                        <p><strong>Company:</strong> ${job.company_name || 'N/A'}</p>
+                    </div>
+                    <div class="job-card-body">
+                        <p><strong>Location:</strong> ${job.job_location || 'N/A'}</p>
+                        <p><strong>Skills:</strong> ${skillsArray.length > 0 ? skillsArray.join(', ') : 'N/A'}</p>
+                        <p><strong>Schedule Type:</strong> ${job.job_schedule_type || 'N/A'}</p>
+                    </div>
+                    `;
+            
+                    // Add click event listener to the job card
+                    jobCard.addEventListener('click', () => {
+                        const jobId = job.key_id; // Use job_id instead of key_id
+                        if (jobId) {
+                            window.location.href = `job-details?id=${jobId}`;
+                        } else {
+                            console.error('Job ID (job_id) is undefined');
+                        }
+                    });
+            
+                    console.log('Appending saved job card:', jobCard);
+                    savedJobResults.appendChild(jobCard);
+                });
+            }
+        
+            // Fetch saved jobs from the server
+            fetch(`/saved-jobs/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displaySavedJobs(data.jobs);
+                    } else {
+                        console.error('Failed to retrieve saved jobs');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching saved jobs:', error);
+                });
+        });        
+        </script>
+        <script>        
+            document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('searchInput');
+            const placeholderTexts = [
+            'Find your perfect job with AI assistance',
+            'Looking for Python and Java dev jobs in Bangalore or Hyderabad',
+            'I am a computer science teacher seeking techincal roles in the industry',
+            'data scientist or machine learning roles remotely',
+            'software engineer or full stack devloper roles in Mumbai',
+            'Internships in AI or data analysis in Pune',
+            'Marketing manager or digital marketing jobs in delhi',
+            'graphic designer, creative jobs remote work pls',
+            'Project manager in Agile and Scrum roles in Chennai',
+            'Entry level jobs in finance or accounting in Kolkata',
+            'freelance writter or content creation jobs remote',
+            'Customer support or call center jobs Ahmedabad',
+            'HR manager or human resource roles in Noida',
+            'IT support/technical suport jobs in Kochi',
+            'bussiness analyst, data analysis jobs Gurgaon',
+            'Sales exec with B2B experince looking for jobs in Jaipur',
+            'Product manager or product dev jobs Banglore',
+            'ux/ui design user exprience in Hyderabad',
+            'Network engineer or cybersecurity jobs Chennai',
+            'heathcare jobs like nurse, doctor in delhi',
+            'Looking for backend dev roles in Lucknow',
+            'Frontend developer jobs in Surat',
+            'Remote work for content writing in Patna',
+            'Digital marketing internships in Bhopal',
+            'Seeking software testing roles in Indore',
+            'Data entry jobs available in Ranchi',
+            'looking for mechanical engineering jobs in Nagpur',
+            'civil engineering roles in bhubaneswar',
+            'Electrical engineering jobs in Raipur',
+            'searching for biotech internships in chandigarh',
+            'Pharmaceutical jobs in Ludhiana',
+            'Teaching positions in Varanasi',
+            'Hospitality management roles in Goa',
+            'Event planning jobs in Udaipur',
+            'Legal advisor roles in Jodhpur',
+            'public relations jobs in Amritsar',
+            'Journalism internships in Shimla',
+            'looking for aviation jobs in coimbatore',
+            'Marine engineering roles in Visakhapatnam',
+            'agricultural jobs in Nashik',
+            'veterinary positions in madurai',
+            'environmental science roles in Guwahati',
+            'Urban planning jobs in Dehradun',
+            'Fashion design internships in Surat',
+            'interior design roles in mysore',
+            'Animation and VFX jobs in Thiruvananthapuram',
+            'Game development roles in Mangalore',
+            'Blockchain developer jobs in Hubli',
+            'AI research positions in Tiruchirappalli',
+            'Robotics engineering roles in Jabalpur'
+        ];
+
+                const imageSrc1 = '/assets/chatbot.png';
+                const imageSrc2 = '/assets/ai.png';
+                const typingSpeed = 100; // Speed of typing in milliseconds
+                const pauseBetweenTexts = 2000; // Pause between different placeholder texts in milliseconds
+            
+                let currentTextIndex = 0;
+                let currentCharIndex = 0;
+                let typingInterval;
+                let isImage1 = true;
+            
+                function typePlaceholder() {
+                    if (currentCharIndex === 0) {
+                        // Add the image before the text
+                        const img = document.createElement('img');
+                        img.id = 'blinkingImage';
+                        img.src = isImage1 ? imageSrc1 : imageSrc2;
+                        img.classList.add('placeholder-image');
+                        img.classList.add(isImage1 ? 'grow' : 'shrink');
+                        placeholderContainer.appendChild(img);
+                        isImage1 = !isImage1; // Toggle the image source
+                    }
+            
+                    if (currentCharIndex < placeholderTexts[currentTextIndex].length) {
+                        placeholderContainer.innerHTML += placeholderTexts[currentTextIndex].charAt(currentCharIndex);
+                        currentCharIndex++;
+                        typingInterval = setTimeout(typePlaceholder, typingSpeed);
+                    } else {
+                        // Add the blinking cursor after the text
+                        const cursor = document.createElement('span');
+                        cursor.classList.add('blinking-cursor');
+                        cursor.innerText = '|';
+                        placeholderContainer.appendChild(cursor);
+            
+                        typingInterval = setTimeout(() => {
+                            placeholderContainer.innerHTML = '';
+                            currentCharIndex = 0;
+                            currentTextIndex = (currentTextIndex + 1) % placeholderTexts.length;
+                            typePlaceholder();
+                        }, pauseBetweenTexts);
+                    }
+                }
+            
+                function hidePlaceholder() {
+                    clearTimeout(typingInterval);
+                    placeholderContainer.style.display = 'none';
+                }
+            
+                function showPlaceholder() {
+                    placeholderContainer.style.display = 'flex';
+                    placeholderContainer.innerHTML = '';
+                    currentCharIndex = 0;
+                    typePlaceholder();
+                }
+            
+                searchInput.addEventListener('focus', hidePlaceholder);
+                searchInput.addEventListener('input', hidePlaceholder);
+                searchInput.addEventListener('blur', function () {
+                    if (!searchInput.value) {
+                        showPlaceholder();
+                    }
+                });
+            
+                showPlaceholder();
+});
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Create a style element
+    const style = document.createElement('style');
+    style.type = 'text/css';
+
+    // Define your CSS styles
+    const css = `
+        .placeholder-image {
+        transition: transform 1s ease-in-out;
+    }
+    
+    .grow {
+        animation: grow 2s infinite alternate;
+    }
+    
+    .shrink {
+        animation: shrink 2s infinite alternate;
+    }
+    
+    @keyframes grow {
+        from {
+            transform: scale(1.0);
+        }
+        to {
+            transform: scale(1.25);
+        }
+    }
+    
+    @keyframes shrink {
+        from {
+            transform: scale(1.25);
+        }
+        to {
+            transform: scale(1.0);
+        }
+    }
+        
+        /* Basic Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Search Container */
+        .search-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Full viewport height */
+            position: relative; /* For positioning the loading spinner */
+        }
+
+        /* Results Title */
+        #resultsTitle {
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* Job Results Container */
+        .job-results {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 12px;
+            height: 100vh; /* Full viewport height */
+            scroll-behavior: smooth;
+        }
+
+        /* Job Card Styling */
+        .job-card {
+            background: rgba(255, 255, 255, 0.85); /* Glass effect */
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            max-width: 300px;
+            width: 100%;
+            box-sizing: border-box;
+            cursor: pointer;
+            position: relative;
+        }
+
+        /* Hover effect for job cards */
+        .job-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Fullscreen Job Card */
+        .job-card.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.97);
+            z-index: 1000;
+            margin: 0;
+            border-radius: 0;
+            padding: 40px;
+            overflow-y: auto;
+            box-shadow: none;
+            transition: all 0.4s ease-in-out;
+        }
+
+        /* Fullscreen Content - Adjusted to fit large view */
+        .job-card.fullscreen h3 {
+            font-size: 2rem;
+        }
+
+        .job-card.fullscreen p {
+            font-size: 1.2rem;
+        }
+
+        /* Close Button */
+        .job-card .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: #333;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Add some close button hover effect */
+        .job-card .close-btn:hover {
+            color: #ff0000;
+        }
+
+        /* Card Header and Body */
+        .job-card-header {
+            margin-bottom: 15px;
+        }
+
+        .job-card-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .job-card-header p, .job-card-body p {
+            margin: 5px 0;
+            font-size: 1rem;
+            color: #555; /* Darker grey text for readability */
+        }
+
+        /* Glassmorphism scrollbar */
+        .job-results::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .job-results::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .job-results::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .job-results::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Advanced Loading Animation */
+        .loading {
+            position: fixed; /* Fixed positioning to stay in place */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2); /* Glass effect for loading spinner */
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999; /* Ensure it's above other content */
+            --duration: 2s; /* Default duration if not set */
+        }
+
+        .loading::before {
+            content: "";
+            width: 60px;
+            height: 60px;
+            border: 8px solid rgba(255, 255, 255, 0.3);
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            animation: spin linear infinite;
+            animation-duration: var(--duration);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .job-card {
+                max-width: 100%;
+            }
+        }
+            /* Saved Results Title */
+#savedResultsTitle {
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Saved Job Results Container */
+.saved-job-results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 20px;
+    background: #fafafa;
+    border-radius: 12px;
+    height: 100vh; /* Full viewport height */
+    scroll-behavior: smooth;
+}
+
+/* Saved Job Card Styling */
+.saved-job-card {
+    background: rgba(255, 255, 255, 0.85); /* Glass effect */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 300px;
+    width: 100%;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+/* Hover effect for saved job cards */
+.saved-job-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Header and Body for saved jobs */
+.saved-job-card-header {
+    margin-bottom: 15px;
+}
+
+.saved-job-card-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.saved-job-card-header p {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: #555; /* Darker grey text for readability */
+}
+    /* Dark Mode Styles */
+body.dark-mode {
+    background-color: #121212; /* Dark background for the entire page */
+    color: #e0e0e0; /* Light text for readability */
+}
+
+body.dark-mode table th {
+    background-color: #333; /* Dark header background for tables */
+    color: #e0e0e0; /* Light text in table headers */
+}
+
+body.dark-mode table td {
+    background-color: #1e1e1e; /* Dark background for table cells */
+    border-color: #444; /* Darker border */
+}
+
+body.dark-mode table tr:nth-child(even) {
+    background-color: #242424; /* Slightly lighter dark color for alternating rows */
+}
+
+body.dark-mode table tr:hover {
+    background-color: #333; /* Darker hover effect for table rows */
+}
+
+/* Job Card Dark Mode */
+body.dark-mode .job-card,
+body.dark-mode .saved-job-card {
+    background: rgba(50, 50, 50, 0.85); /* Dark glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Light border */
+    color: #e0e0e0; /* Light text color */
+}
+
+body.dark-mode .job-card.fullscreen {
+    background: rgba(40, 40, 40, 0.97); /* Dark background for fullscreen job card */
+}
+
+body.dark-mode .job-card-header h3,
+body.dark-mode .saved-job-card-header h3 {
+    color: #f0f0f0; /* Lighter header text */
+}
+
+body.dark-mode .job-card-header p,
+body.dark-mode .job-card-body p,
+body.dark-mode .saved-job-card-header p {
+    color: #b0b0b0; /* Lighter paragraph text */
+}
+
+/* Dark Mode Scrollbar */
+body.dark-mode .job-results::-webkit-scrollbar-thumb,
+body.dark-mode .saved-job-results::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2); /* Light scrollbar thumb */
+}
+
+body.dark-mode .job-results::-webkit-scrollbar-thumb:hover,
+body.dark-mode .saved-job-results::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4); /* Brighter on hover */
+}
+
+/* Dark Mode Loading Spinner */
+body.dark-mode .loading {
+    background: rgba(50, 50, 50, 0.2); /* Dark glass effect for loading spinner */
+}
+
+body.dark-mode .loading::before {
+    border-top: 8px solid #3498db; /* Keep loading spinner color */
+    border: 8px solid rgba(255, 255, 255, 0.3); /* Light transparent border */
+}
+    `;
+
+    // Add the CSS to the head of the document
+    style.appendChild(document.createTextNode(css));
+    document.head.appendChild(style);
+            const params = new URLSearchParams(window.location.search);
+            const jobId = params.get('id');
+        
+            if (jobId) {
+                fetchJobDetails(jobId);
+            } else {
+                document.getElementById('jobDetails').innerHTML = '<p>No job ID provided.</p>';
+            }
+        });
+        
+        function fetchJobDetails(jobId) {
+            const jobDetailsContainer = document.getElementById('jobDetails');
+            
+            jobDetailsContainer.innerHTML = '';
+        
+            fetch(`http://localhost:5000/job-details/${jobId}`)
+                .then(response => response.json())
+                .then(jobDetails => {
+                    if (jobDetails.error) {
+                        jobDetailsContainer.innerHTML = '<p>Error fetching job details. Please try again later.</p>';
+                        return;
+                    }
+        
+                    let skillsArray = [];
+                    try {
+                        skillsArray = JSON.parse(jobDetails.job_skills.replace(/'/g, '"'));
+                    } catch (e) {
+                        console.error('Error parsing job_skills:', e);
+                    }
+        
+                    jobDetailsContainer.innerHTML = `
+                        <div class="job-card-header">
+                        <h3>${jobDetails.job_title || 'N/A'}</h3>
+                        <p><strong>Company:</strong> ${jobDetails.company_name || 'N/A'}</p>
+                    </div>
+                    <div class="job-card-body">
+                        <h3>${jobDetails.job_title || 'N/A'}</h3>
+                        <p><strong>Company:</strong> ${jobDetails.company_name || 'N/A'}</p>
+                    </div>
+                    <div class="job-card-body">
+                        <p><strong>Location:</strong> ${jobDetails.job_location || 'N/A'}</p>
+                        <p><strong>Skills:</strong> ${skillsArray.length > 0 ? skillsArray.join(', ') : 'N/A'}</p>
+                        <p><strong>Schedule Type:</strong> ${jobDetails.job_schedule_type || 'N/A'}</p>
+                        <p><strong>Posted Date:</strong> ${jobDetails.job_posted_date || 'N/A'}</p>
+                        <p><strong>Job Type:</strong> ${jobDetails.job_type || 'N/A'}</p>
+                        <p><strong>Health Insurance:</strong> ${jobDetails.job_health_insurance ? 'Yes' : 'No'}</p>
+                        <p><strong>Work From Home:</strong> ${jobDetails.job_work_from_home ? 'Yes' : 'No'}</p>
+                        <p><strong>Via:</strong> ${jobDetails.job_via || 'N/A'}</p>
+                    </div>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error fetching job details:', error);
+                    jobDetailsContainer.innerHTML = '<p>Error fetching job details. Please try again later.</p>';
+                });
+        }        
+    </script>
+    <!--<script src="https://cdn.botpress.cloud/webchat/v2.1/inject.js"></script>
+    <script src="https://mediafiles.botpress.cloud/0cf3e869-0cf5-4214-b906-7bf2c102effb/webchat/v2.1/config.js"></script>-->
+    <!-- Footer -->
+    <footer class="hidden-3">
+      <p>WorkNet &copy; 2024. All Rights Reserved.</p>
+    </footer>
+    <script src="./scripts/chatbot.js"></script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <form action="/submit" method="POST" onsubmit="return validateForm()">
+    <link rel="icon" href="/assets/favicon.ico">
+    <title>Job Application Form</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/scripts/index.js" defer></script>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            animation: fadeInBody 1s ease-in-out;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin: 20px 0;
+            animation: slideDown 1s ease-in-out;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            background-color: #333;
+            padding: 10px;
+            color: white;
+            animation: fadeInHeader 1.5s ease-in-out;
+        }
+
+        .header h2 {
+            margin: 0;
+        }
+
+        .header .right {
+            font-size: 20px;
+            font-weight: bold;
+            animation: moveRight 1.5s ease-in-out;
+        }
+
+        /* Form Styles */
+        form {
+            width: 60%;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: fadeInForm 2s ease-in-out;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        section {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            animation: slideUp 1s ease-in-out;
+        }
+
+        input[type="text"], input[type="email"], input[type="tel"], textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s ease; /* Transition added here */
+        }
+
+        textarea {
+            height: 100px;
+        }
+
+        /* Hover Effect for Input Fields */
+        input[type="text"]:hover, input[type="email"]:hover, input[type="tel"]:hover, textarea:hover {
+            transform: scale(1.02); /* Slight zoom on hover */
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.3); /* Shadow effect */
+        }
+
+        input[type="text"]:focus, input[type="email"]:focus, input[type="tel"]:focus, textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+            transform: scale(1.03); /* Slight zoom on focus */
+        }
+
+        /* Submit Button Styles */
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions added */
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+            transform: scale(1.05); /* Slight zoom on hover */
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.5); /* Hover shadow */
+        }
+
+        /* Animations */
+        @keyframes fadeInBody {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInHeader {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInForm {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes moveRight {
+            from { transform: translateX(-100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(31, 31, 31, 0.5);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+    </style>
+    <script>
+        function validateForm() {
+            let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value;
+            let phone = document.getElementById("phone").value;
+            let address = document.getElementById("address").value;
+            let whyHire = document.getElementById("why-hire").value;
+
+            if (name === "" || email === "" || phone === "" || address === "" || whyHire === "") {
+                alert("Please fill out all fields before submitting.");
+                return false;
+            }
+            alert("Form submitted successfully!");
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <!-- Header with WORKNET -->
+    <div class="header">
+        <h2>Job Application Form</h2>
+        <div class="right">WORKNET</div>
+    </div>
+
+    <!-- Main Heading -->
+    <h1>Apply Now</h1>
+
+    <!-- Job Application Form -->
+    <form onsubmit="return validateForm()">
+        <!-- User Details Section -->
+        <section>
+            <h2>User Details</h2>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name">
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email">
+            
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" name="phone">
+            
+            <label for="address">Address:</label>
+            <textarea id="address" name="address"></textarea>
+        </section>
+
+        <!-- Why Hire Section -->
+        <section>
+            <h2>Why should we hire you?</h2>
+            <textarea id="why-hire" name="why-hire" title="Why should we hire you?" placeholder="Explain why we should hire you"></textarea>
+        </section>
+
+        <!-- Submit Button -->
+        <input type="submit" value="Apply">
+    </form>
+    <script src="./scripts/chatbot.js"></script>
+</body>
+</html>

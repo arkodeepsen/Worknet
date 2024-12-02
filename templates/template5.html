@@ -1,0 +1,179 @@
+<!-- Dark Themed Technical Resume Template -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Themed Technical Resume</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #1c1c1c;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #292929;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        .header {
+            text-align: center;
+            padding: 30px 0;
+        }
+        .profile-picture {
+            display: none;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 10px auto;
+            border: 2px solid #3498db;
+        }
+        h2 {
+            border-bottom: 1px solid #444;
+            padding-bottom: 5px;
+            color: #3498db;
+        }
+        .skills ul {
+            list-style: none;
+            padding: 0;
+        }
+        .skills li {
+            background-color: #e67e22;
+            padding: 5px 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .optional-section {
+            display: none;
+        }
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(31, 31, 31, 0.5);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+    <script src="scripts/download.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <% if (resume.enableProfilePic === 'true') { %>
+                <img class="profile-picture" src="<%= profilePicture %>" alt="Profile Picture" style="display: block;">
+            <% } %>
+            <h1><%= resume.firstName %> <%= resume.lastName %></h1>
+            <p>Email: <%= resume.email %> | Phone: <%= resume.contact %></p>
+        </div>
+
+        <div class="summary">
+            <h2>Professional Summary</h2>
+            <p><%- resume.summary %></p>
+        </div>
+
+        <div class="experience">
+            <h2>Professional Experience</h2>
+            <% experience.forEach(exp => { %>
+                <div style="margin-bottom: 20px;">
+                    <p><strong><%= exp.jobTitle %></strong> - <%= exp.employer %> (<%= exp.startDate %> - <%= exp.currentWork === 1 ? 'Present' : exp.endDate %>)</p>
+                    <div>
+                        <%- exp.responsibilities %>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+
+        <div class="education">
+            <h2>Education</h2>
+            <% education.forEach(edu => { %>
+                <p><strong><%= edu.degree %></strong> - <%= edu.institution %> (<%= edu.graduationYear %>)</p>
+            <% }) %>
+        </div>
+
+        <div class="skills">
+            <h2>Skills</h2>
+            <ul>
+                <% skills.forEach(skill => { %>
+                    <li><%= skill %></li>
+                <% }) %>
+            </ul>
+        </div>
+
+        <!-- Optional Sections -->
+        <% if (websites.length > 0) { %>
+            <div class="optional-section websites" style="display: block;">
+                <h2>Websites, Portfolios, Profiles</h2>
+                <% websites.forEach(site => { %>
+                    <p><img src="https://www.google.com/s2/favicons?domain=<%= site.websiteName %>.com" 
+                        alt="<%= site.websiteName %>" style="width: 16px; height: 16px; margin-right: 8px;">
+                        <strong><a href="<%= site.websiteLink %>" style="color: #3498db; text-decoration: none;">
+                        <%= site.websiteName %></a></strong></p>
+                <% }) %>
+            </div>
+        <% } %>
+
+        <% if (certifications.length > 0) { %>
+            <div class="optional-section certifications" style="display: block;">
+                <h2>Certifications</h2>
+                <% certifications.forEach(cert => { %>
+                    <p><img src="https://www.google.com/s2/favicons?domain=<%= cert.issuingOrg %>.com" 
+                        alt="<%= cert.issuingOrg %>" style="width: 16px; height: 16px; margin-right: 8px;">
+                        <strong><%= cert.certificationName %></strong> - <%= cert.issuingOrg %></p>
+                    <p>Issued: <%= cert.issueDate %><br>Credential ID: <%= cert.credentialId %></p>
+                <% }) %>
+            </div>
+        <% } %>
+
+        <% if (languages.length > 0) { %>
+            <div class="optional-section languages" style="display: block;">
+                <h2>Languages</h2>
+                <% languages.forEach(lang => { %>
+                    <p><strong><%= lang.languageName %></strong><br>Proficiency: <%= lang.proficiencyLevel %></p>
+                <% }) %>
+            </div>
+        <% } %>
+
+        <% if (accomplishments.length > 0) { %>
+            <div class="optional-section accomplishments" style="display: block;">
+                <h2>Accomplishments</h2>
+                <% accomplishments.forEach(acc => { %>
+                    <p><strong><%= acc.accomplishmentName %></strong> - <%= acc.accomplishmentOrg %></p>
+                <% }) %>
+            </div>
+        <% } %>
+
+        <% if (additionalInfo.length > 0) { %>
+            <div class="optional-section additional-info" style="display: block;">
+                <h2>Additional Information</h2>
+                <% additionalInfo.forEach(info => { %>
+                    <p><strong><%= info.hobbies %></strong><br><%= info.additionalInfo %></p>
+                <% }) %>
+            </div>
+        <% } %>
+
+        <% if (affiliations.length > 0) { %>
+            <div class="optional-section affiliations" style="display: block;">
+                <h2>Affiliations</h2>
+                <% affiliations.forEach(aff => { %>
+                    <p><strong><%= aff.membershipType %></strong> - <%= aff.affiliationOrg %></p>
+                <% }) %>
+            </div>
+        <% } %>
+    </div>
+</body>
+</html>

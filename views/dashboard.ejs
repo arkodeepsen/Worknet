@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard | WorkNet</title>
+    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
+    <script src="/scripts/index.js" defer></script>
+    <script src="/scripts/dashboard.js" defer></script>
+    <style>
+        /* General body styles */
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f4f4f4;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Navbar styles */
+.navbar {
+    background-color: #1e1e1e;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-logo img {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.navbar-links {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    margin-left: auto; /* Right-align links */
+}
+.navbar-ai {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0; /* Right-align links */
+    margin-bottom: 12.5px;
+}
+
+.navbar-links .list-1, .navbar-links .list-2 {
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.navbar-links h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-links i {
+    margin-right: 8px;
+}
+
+.dashboard-button {
+    background: rgb(255, 255, 255); /* Dark glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.4); /* Light border */
+    color: #000000; /* White text */
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    position: relative;
+    -webkit-backdrop-filter: blur(10px); /* Adjust blur */
+    backdrop-filter: blur(10px); /* Adjust blur */
+    box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+    transition: background-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+/* Hover effect */
+.dashboard-button:hover {
+    background: rgb(88, 151, 219); /* Bright blue background */
+    border: 1px solid rgba(255, 255, 255, 0.6); /* Slightly lighter border */
+    color: #fff; /* White text */
+    font-weight: bold;
+    box-shadow: 0px 12px 40px rgba(0, 123, 255, 0.7); /* Bright blue shadow */
+    transform: scale(1.05); /* Slight scale up */
+}
+
+.dashboard-button:hover::before {
+    animation: none; /* Stop glitter animation on hover */
+}
+/* Button icon animation */
+.dashboard-button .icon {
+    width: 25px;
+    height: 25px;
+    transform: scale(1.25) translateY(5px);
+    transition: transform 0.4s ease;
+}
+
+.dashboard-button:hover .icon {
+    transform: scale(1.5) translateY(4px) rotate(360deg);
+}
+
+.dark-mode-toggle {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.dark-mode-toggle i {
+    margin: 0 5px;
+    color: #ffffff; /* White color */
+    opacity: 0.7; /* Adjust the opacity */
+    font-size: 20px;
+}
+
+
+
+        /* Dashboard container styles */
+        .dashboard-container {
+            padding: 30px;
+            max-width: 1200px;
+            margin: auto;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            opacity: 0.2;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .dashboard-container:hover::before {
+            opacity: 0.4;
+        }
+
+        .dashboard-container h1 {
+            margin-top: 0;
+            font-size: 28px;
+            color: #1e1e1e;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .dashboard-container h2 {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 8px;
+            font-size: 22px;
+            color: #333;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #007bff;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.1);
+        }
+
+        #resume-data p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .update-button {
+            display: inline-block;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            background-color: #28a745;
+            padding: 12px 24px;
+            border-radius: 6px;
+            transition: background-color 0.3s, transform 0.2s;
+            margin: 20px 0;
+            text-align: center;
+            animation: bounceIn 0.6s ease-in-out;
+        }
+
+        .update-button:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        .job-engine {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .job-engine h2 {
+            margin-top: 0;
+            font-size: 22px;
+            color: #333;
+        }
+
+        .job-engine .job-card {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
+            cursor: pointer; /* Indicate that the card is clickable */
+        }
+
+        .job-engine .job-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transform: translateY(-2px);
+            background-color: #f0f0f0; /* Change background on hover */
+            transform: scale(1.02); /* Slightly enlarge the card */
+        }
+
+        .job-engine .job-card h3 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #007bff;
+            animation: textGlow 1.5s infinite alternate;
+        }
+
+        .job-engine .job-card p {
+            margin: 5px 0;
+        }
+
+        .job-engine .job-card a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .job-engine .job-card a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+
+        /* Dark mode styles */
+        .dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .navbar {
+            background-color: #1f1f1f;
+        }
+
+        .dark-mode .dashboard-container {
+            background-color: #1e1e1e;
+        }
+
+        .dark-mode .update-button {
+            background-color: #34c759;
+        }
+
+        .dark-mode .update-button:hover {
+            background-color: #28a745;
+        }
+
+        .dark-mode .job-engine {
+            background-color: #1e1e1e;
+        }
+
+        .dark-mode .job-engine .job-card {
+            background-color: #333;
+            border: 1px solid #444;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes bounceIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes textGlow {
+            from { text-shadow: 0 0 5px rgba(0, 123, 255, 0.5); }
+            to { text-shadow: 0 0 20px rgba(0, 123, 255, 0.8); }
+        }
+
+                    /* Responsive design */
+                    @media (max-width: 768px) {
+                        .navbar-links {
+                            flex-direction: column;
+                            align-items: flex-start;
+                        }
+        
+                        .navbar-links .list-1, .navbar-links .list-2, .navbar-links .list-3 {
+                            margin-right: 0;
+                            margin-bottom: 10px;
+                        }
+        
+                        .dashboard-container {
+                            padding: 20px;
+                        }
+        
+                        .profile-pic {
+                            width: 120px;
+                            height: 120px;
+                        }
+                    }
+                    ::-webkit-scrollbar {
+                        width: 10px;
+                    }
+                    
+                    ::-webkit-scrollbar-track {
+                        background: rgba(31, 31, 31, 0.5);
+                        border-radius: 10px;
+                    }
+                    
+                    ::-webkit-scrollbar-thumb {
+                        background: rgba(255, 255, 255, 0.5);
+                        border-radius: 10px;
+                    }
+                    
+                    ::-webkit-scrollbar-thumb:hover {
+                        background: rgba(255, 255, 255, 0.7);
+                    }
+            </style>
+        </head>
+        <body>
+            <!-- Navbar -->
+            <nav class="navbar">
+                <div class="navbar-logo hidden">
+                    <a href="/index"><img src="/assets/worknet.png" alt="WorkNet Logo" class="logo-img tilt" data-tilt data-tilt-scale="1.1" data-tilt-glare="true" data-tilt-max-glare="0.5"></a>
+                    <a href="https://rajasthan.gov.in/"><img src="/assets/logo_alt.png" alt="Logo" class="logo-img"></a>
+                </div>
+                <div id="darkModeToggle" class="dark-mode-toggle hidden">
+                    <i class="fa fa-sun" aria-hidden="true"></i>
+                    <i class="fa fa-moon" aria-hidden="true"></i>
+                </div>
+                <ul class="navbar-links hidden">
+                    <div class="list-1" onclick="window.location.href='/index';"><h3><i class="fa fa-home"></i> Home</h3></div>
+                    <div class="list-2" onclick="window.location.href='/about';"><h3><i class="fa fa-info-circle"></i> About Us</h3></div>
+                </ul>
+                <ul class="navbar-ai hidden">
+                    <li onclick="window.location.href='/ai-tools';"><a class="dashboard-button"><img src="/assets/yy3.gif" alt="ai" class="icon"> AI Tools ✨<img src="/assets/yy3.gif" alt="ai" class="icon"></a></li>
+                </ul>
+            </nav>
+        
+            <!-- Dashboard Container -->
+            <div class="dashboard-container">
+                <h1 class="hidden-3">User Dashboard</h1>
+                <img id="dashboard-profile-pic" src="/assets/default.jpg" alt="Profile Picture" class="profile-pic hidden-3">
+                <div id="resume-data" class="hidden">
+                    <h2>Personal Information</h2>
+                    <p id="dashboard-name"></p>
+                    <p id="dashboard-email"></p>
+                    <p id="dashboard-phone"></p>
+        
+                    <h2>Professional Experience</h2>
+                    <div id="dashboard-experience"></div>
+        
+                    <h2>Education</h2>
+                    <div id="dashboard-education"></div>
+        
+                    <h2>Skills</h2>
+                    <p id="dashboard-skills"></p>
+        
+                    <h2>Summary</h2>
+                    <p id="dashboard-summary"></p>
+                </div>
+                <!-- Update Details Button -->
+                <a href="/user" class="update-button hidden-3">Update Details</a>
+            </div>
+        
+            <!-- Job Engine Section -->
+            <!-- Job Engine Section -->
+<div class="dashboard-container job-engine">
+    <h2 class="hidden">Job Engine</h2>
+    <div id="job-results" class="hidden">
+        <!-- Jobs will be displayed here -->
+    </div>
+</div>
+
+            <script src="./scripts/chatbot.js"></script>
+            <!--<script src="https://cdn.botpress.cloud/webchat/v2.1/inject.js"></script>
+            <script src="https://mediafiles.botpress.cloud/0cf3e869-0cf5-4214-b906-7bf2c102effb/webchat/v2.1/config.js"></script>-->
+        </body>
+        </html>
+        

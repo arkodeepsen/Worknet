@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder | WorkNet</title>
+    <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/style/resume-generator.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <script defer src="/scripts/resume-generator.js"></script>
+    <script defer src="/scripts/index.js"></script>
+    <script src="/scripts/lib/requestAnimFrame.js"></script>
+    <!-- Include Awesomplete CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+        <!-- Quill CSS -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+<!-- Quill JS -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
+</head>
+
+<body>
+    <!-- Loading Placeholder -->
+    <div id="loading-placeholder" class="loading-placeholder">
+        <img src="/assets/ai.gif" alt="Loading...">
+        <p id="loading-p">Loading...10%</p>
+    </div>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <img src="/assets/ai.gif" alt="Loading..." style="height: 100px; width: 100px;">
+        <p id="loading-text">Thinking...</p>
+    </div>
+
+    <!-- Sidebar for steps -->
+    <aside class="sidebar hidden-1">
+        <img src="/assets/worknet.png" alt="WorkNet" onclick="window.location.href='/ai-tools'">
+        <ol class="steps">
+            <li onclick="showPage('step-1')">1. Choose Template</li>
+            <li onclick="showPage('step-2')">2. Experience</li>
+            <li onclick="showPage('step-3')">3. Personal Information</li>
+            <li onclick="showPage('step-4')">4. Professional Experience</li>
+            <li onclick="showPage('step-5')">5. Education</li>
+            <li onclick="showPage('step-6')">6. Skills</li>
+            <li onclick="showPage('step-7')">7. Summary</li>
+            <li onclick="showPage('step-8')">8. Finalize</li>
+            <p class="footer">&copy; 2024 WorkNet.
+            All rights reserved.</p>
+        </ol>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content hidden-1">
+        <!-- Step 1: Choose Template -->
+        <div class="step-content" id="step-1">
+            <h2>Choose Your Resume Template</h2>
+            <div class="template-options hidden-2">
+                <div class="template" onclick="selectTemplate('template1')">
+                    <a onclick="openTemplatePreview('/templates/preview/template1.html')"><img src="/templates/template1.png" alt="Template 1"></a>
+                    <label>
+                        <input type="radio" name="resumeTemplate" value="template1" id="template1"> Classic Minimalist Template
+                    </label>
+                </div>
+                <div class="template" onclick="selectTemplate('template2')">
+                    <a onclick="openTemplatePreview('/templates/preview/template2.html')"><img src="/templates/template2.png" alt="Template 2"></a>
+                    <label>
+                        <input type="radio" name="resumeTemplate" value="template2" id="template2"> Creative Sidebar Design
+                    </label>
+                </div>
+                <div class="template" onclick="selectTemplate('template3')">
+                    <a onclick="openTemplatePreview('/templates/preview/template3.html')"><img src="/templates/template3.png" alt="Template 3"></a>
+                    <label>
+                        <input type="radio" name="resumeTemplate" value="template3" id="template3"> Elegant Two-Column Layout
+                    </label>
+                </div>
+                <div class="template" onclick="selectTemplate('template4')">
+                    <a onclick="openTemplatePreview('/templates/preview/template4.html')"><img src="/templates/template4.png" alt="Template 4"></a>
+                    <label>
+                        <input type="radio" name="resumeTemplate" value="template4" id="template4"> Modern One-Page Design
+                    </label>
+                </div>
+                <div class="template" onclick="selectTemplate('template5')">
+                    <a onclick="openTemplatePreview('/templates/preview/template5.html')"><img src="/templates/template5.png" alt="Template 5"></a>
+                    <label>
+                        <input type="radio" name="resumeTemplate" value="template5" id="template5"> Dark Themed Technical Template
+                    </label>
+                </div>
+            </div>
+            <input type="hidden" id="selected-template" name="resumeTemplate">
+            <div class="action-buttons">
+                <button class="btn next-btn" onclick="showPage('step-2')">Next</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Experience Selector -->
+<div class="step-content hidden hidden-2" id="step-2">
+    <h2>Select Experience Level</h2>
+    <div class="btn-group">
+        <div class="btn" onclick="selectExperienceLevel('Entry Level')">Entry Level</div>
+        <div class="btn" onclick="selectExperienceLevel('Mid Level')">Mid Level</div>
+        <div class="btn" onclick="selectExperienceLevel('Senior Level')">Senior Level</div>
+    </div>
+    <input type="hidden" id="experience-level" name="experienceLevel">
+</div>
+
+        <!-- Step 3: Contact Form -->
+        <div class="step-content hidden hidden-1" id="step-3">
+            <h2>What's the best way for employers to contact you?</h2>
+            <form id="personal-info-form">
+                <div class="form-group">
+                    <label for="first-name">First Name *</label>
+                    <input type="text" id="first-name" name="firstName" placeholder="e.g. Saanvi" required>
+                </div>
+                <div class="form-group">
+                    <label for="surname">Surname</label>
+                    <input type="text" id="surname" name="lastName" placeholder="e.g. Patel"  required>
+
+                </div>
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="city" placeholder="e.g. New Delhi" required>
+                    <div id="city-dropdown" class="dropdown hidden"></div>
+                </div>
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <input type="text" id="country" name="country" placeholder="e.g. India" required>
+                </div>
+                <div class="form-group">
+                    <label for="pin-code">Pin Code</label>
+                    <input type="text" id="pin-code" name="pinCode" placeholder="e.g. 110034" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="text" id="phone" name="contact" placeholder="e.g. +91 22 1234 5677" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" placeholder="e.g. saanvipatel@sample.in" required>
+                </div>
+                <div class="action-buttons">
+                    <button type="button" class="btn prev-btn" onclick="showPage('step-2')">Back</button>
+                    <button type="button" class="btn next-btn" onclick="showPage('step-4')">Next</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Step 4: Professional Experience -->
+<div class="step-content hidden hidden-1" id="step-4">
+    <h2>Tell us about your most recent job</h2>
+    <form id="experience-form">
+        <div id="experience-entries">
+            <div class="experience-entry">
+                <div class="form-group">
+                    <label for="job-title">Job Title *</label>
+                    <input type="text" id="job-title" class="awesomplete" name="jobTitle[]" placeholder="e.g. Manager" required>
+                </div>
+                <div class="form-group">
+                    <label for="employer">Employer *</label>
+                    <input type="text" id="employer" class="awesomplete" name="employer[]" placeholder="e.g. H&M" required>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" class="awesomplete" name="location[]" placeholder="e.g. New Delhi, India" required>
+                </div>
+                <div class="form-group">
+                    <label for="start-date">Start Date</label>
+                    <input type="month" id="start-date" name="startDate[]" required>
+                </div>
+                <div class="form-group">
+                    <label for="end-date">End Date</label>
+                    <input type="month" name="endDate[]" class="end-date" required>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" name="currentWork[]" class="current-work-checkbox">
+                    <label for="current-work">I currently work here</label>
+                </div>
+            </div>
+        </div>
+        <button type="button" id="add-experience-button" class="btn">Add Another Job</button>
+        <div class="action-buttons">
+            <button type="button" class="btn prev-btn a" onclick="showPage('step-3')">Back</button>
+            <button type="button" class="btn next-btn a">Next</button>
+        </div>
+    </form>
+</div>
+
+<!-- Page 4.1: Work History -->
+<div class="step-content hidden hidden-1" id="workHistoryPage2">
+    <h2>Work History</h2>
+    <form class="description-form" onsubmit="submitForm(); return false;">
+        <h3>Let's describe what you did</h3>
+        <p>To get started, you can add a job title to generate a job description.</p>
+
+        <div class="form-container">
+            <div class="form-column">
+                <div class="form-group">
+                    <label for="job-title">Job Title *</label>
+                    <input type="text" id="job-title-ai" placeholder="e.g. Software Developer" readonly>
+                </div>
+
+                <div class="results">
+                    <p><strong>Selected Job Description</strong></p>
+                    <!-- Replace the current editable div -->
+                    <div id="job-description-editor" class="rich-text-editor"></div>
+                </div>
+            </div>
+
+            <div class="list-column">
+                <div class="results">
+                    <p><strong style="display: flex; align-items: center;">AI Generated Job Description <img src="/assets/ai.png" alt="AI Icon" style="width: 30px; height: 30px; margin-left: 5px;"></strong></p>
+                    <ul id="job-description-list" class="result-list"></ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button type="button" class="btn prev-btn a" onclick="showPage('step-4')">Back</button>
+            <button type="button" class="btn next-btn b">Next</button>
+        </div>
+    </form>
+</div>
+
+        <!-- Step 5: Education -->
+<div class="step-content hidden hidden-1" id="step-5">
+    <h2>What is your highest level of education?</h2>
+    <form id="education-form">
+        <div id="education-entries">
+            <div class="education-entry">
+                <div class="form-group">
+                    <label for="degree">Degree *</label>
+                    <input type="text" id="educationDegree" name="educationDegree[]" placeholder="Select Degree" required>
+                </div>
+                <div class="form-group">
+                    <label for="specialization">Specialization</label>
+                    <input type="text" id="specialization" name="specialization[]" placeholder="Select Stream" required>
+                </div>
+                <div class="form-group">
+                    <label for="institution">Institution *</label>
+                    <input type="text" id="institution" name="institution[]" placeholder="Select Your College" required>
+                </div>
+                <div class="form-group">
+                    <label for="graduation-year">Graduation Year *</label>
+                    <input type="number" name="graduationYear[]" min="1900" max="2100" required>
+                </div>
+            </div>
+        </div>
+        <button type="button" id="add-education-button" class="btn">Add Another Education</button>
+        <div class="action-buttons">
+            <button type="button" class="btn prev-btn" onclick="showPage('step-4')">Back</button>
+            <button type="button" class="btn next-btn" onclick="showPage('step-6')">Next</button>
+        </div>
+    </form>
+</div>
+
+        <!-- Step 6: Skills -->
+<div class="step-content hidden hidden-2" id="step-6">
+    <h2>What skills would you like to highlight?</h2>
+    <form id="skills-form">
+        <div class="form-group">
+            <label for="skills">Skills *</label>
+            <div id="skills-container">
+                <div id="skills-input-container">
+                    <!-- Visible input for adding skills -->
+                    <input type="text" id="skills-visible-input" placeholder="e.g. JavaScript, Python">
+                </div>
+                <!-- Keep the original input hidden for form submission -->
+                <input type="hidden" id="skills-input" name="skills" required>
+            </div>
+        </div>        
+        <div class="action-buttons">
+            <button type="button" class="btn prev-btn" onclick="showPage('step-5')">Back</button>
+            <button type="button" class="btn next-btn" onclick="showPage('step-7')">Next</button>
+        </div>
+    </form>
+</div>
+
+<!-- Step 7: Summary -->
+<div class="step-content hidden hidden-2" id="step-7">
+    <h2>Let's write a brief summary about you</h2>
+    <form id="summary-form">
+        <div class="form-group">
+            <label for="summary-editor" style="display: flex; align-items: center;">
+                AI Generated Summary 
+                <img src="/assets/salary-ai.png" alt="AI Icon" style="width: 30px; height: 30px; margin-left: 5px;">
+            </label>
+            <!-- Rich Text Editor Container -->
+            <div id="summary-editor" name="summary" class="rich-text-editor"></div>
+        </div>
+
+        <div class="action-buttons">
+            <button type="button" class="btn prev-btn" onclick="showPage('step-6')">Back</button>
+            <button type="button" class="btn next-btn" id="save-summary-btn">Next</button>
+        </div>
+    </form>
+</div>
+
+    <!-- Step 8: Finalize -->
+    <div class="step-content hidden hidden-1" id="step-8">
+        <h2>Finalize Your Resume</h2>
+    
+        <!-- Profile Picture Checkbox -->
+        <div class="form-group">
+            <input type="checkbox" id="enable-profile-pic" name="enableProfilePic">
+            <label for="enable-profile-pic">Enable Profile Picture</label>
+        </div>
+    
+        <!-- Websites -->
+        <div class="form-group">
+            <input type="checkbox" id="enable-websites" name="enableWebsites" class="hidden">
+            <label for="enable-websites">Add Websites &#x25BE;</label>
+            <div id="websites-form" class="optional-form hidden">
+                <h3>Websites</h3>
+                <div class="form-group">
+                    <label for="website-name">Website Name</label>
+                    <input type="text" id="website-name" name="websiteName" placeholder="e.g. LinkedIn">
+                </div>
+                <div class="form-group">
+                    <label for="website-link">Website Link</label>
+                    <input type="url" id="website-link" name="websiteLink" placeholder="e.g. https://www.linkedin.com/in/yourprofile">
+                </div>
+                <button type="button" class="btn add-more" onclick="addMoreFields('websites-form', 'website')">Add More</button>
+            </div>
+        </div>
+    
+        <!-- Certifications -->
+        <div class="form-group">
+            <input type="checkbox" id="enable-certifications" name="enableCertifications" class="hidden">
+            <label for="enable-certifications">Add Certifications &#x25BE;</label>
+            <div id="certifications-form" class="optional-form hidden">
+                <h3>Certifications</h3>
+                <div class="form-group">
+                    <label for="certification-name">Certification Name</label>
+                    <input type="text" id="certification-name" name="certificationName" placeholder="e.g. AWS Certified Solutions Architect">
+                </div>
+                <div class="form-group">
+                    <label for="issuing-org">Issuing Organization</label>
+                    <input type="text" id="issuing-org" name="issuingOrg" placeholder="e.g. Amazon Web Services">
+                </div>
+                <div class="form-group">
+                    <label for="issue-date">Issue Date</label>
+                    <input type="date" id="issue-date" name="issueDate">
+                </div>
+                <div class="form-group">
+                    <label for="certification-link">Certification Link (Optional)</label>
+                    <input type="url" id="certification-link" name="certificationLink" placeholder="e.g. https://www.yourcertification.com">
+                </div>
+                <div class="form-group">
+                    <label for="credential-id">Credential ID (Optional)</label>
+                    <input type="text" id="credential-id" name="credentialId" placeholder="e.g. 123456789">
+                </div>
+                <button type="button" class="btn add-more" onclick="addMoreFields('certifications-form', 'certification')">Add More</button>
+            </div>
+        </div>
+    
+        <!-- Languages -->
+        <div class="form-group">
+            <input type="checkbox" id="enable-languages" name="enableLanguages" class="hidden">
+            <label for="enable-languages">Add Languages &#x25BE;</label>
+            <div id="languages-form" class="optional-form hidden">
+                <h3>Languages</h3>
+                <div class="form-group">
+                    <label for="language-name">Language</label>
+                    <input type="text" id="language-name" name="languageName" placeholder="e.g. English">
+                </div>
+                <div class="form-group">
+                    <label for="proficiency-level">Proficiency Level</label>
+                    <select id="proficiency-level" name="proficiencyLevel">
+                        <option value="Native or Bilingual">Native or Bilingual</option>
+                        <option value="Professional">Professional</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Beginner">Beginner</option>
+                    </select>
+                </div>
+                <button type="button" class="btn add-more" onclick="addMoreFields('languages-form', 'language')">Add More</button>
+            </div>
+        </div>
+    
+        <!-- Accomplishments -->
+        <div class="form-group">
+            <input type="checkbox" id="enable-accomplishments" name="enableAccomplishments" class="hidden">
+            <label for="enable-accomplishments">Add Accomplishments &#x25BE;</label>
+            <div id="accomplishments-form" class="optional-form hidden">
+                <h3>Accomplishments</h3>
+                <div class="form-group">
+                    <label for="accomplishment-name">Accomplishment Name</label>
+                    <input type="text" id="accomplishment-name" name="accomplishmentName" placeholder="e.g. Published Research Paper">
+                </div>
+                <div class="form-group">
+                    <label for="accomplishment-org">Organization</label>
+                    <input type="text" id="accomplishment-org" name="accomplishmentOrg" placeholder="e.g. IEEE">
+                </div>
+                <button type="button" class="btn add-more" onclick="addMoreFields('accomplishments-form', 'accomplishment')">Add More</button>
+            </div>
+        </div>
+    
+        <!-- Affiliations -->
+        <div class="form-group">
+            <input type="checkbox" id="enable-affiliations" name="enableAffiliations" class="hidden">
+            <label for="enable-affiliations">Add Affiliations &#x25BE;</label>
+            <div id="affiliations-form" class="optional-form hidden">
+                <h3>Affiliations</h3>
+                <div class="form-group">
+                    <label for="membership-type">Membership Type</label>
+                    <input type="text" id="membership-type" name="membershipType" placeholder="e.g. Member">
+                </div>
+                <div class="form-group">
+                    <label for="affiliation-org">Organization</label>
+                    <input type="text" id="affiliation-org" name="affiliationOrg" placeholder="e.g. ACM">
+                </div>
+                <button type="button" class="btn add-more" onclick="addMoreFields('affiliations-form', 'affiliation')">Add More</button>
+            </div>
+        </div>
+    
+        <!-- Additional Info -->
+        <div class="form-group">
+            <input type="checkbox" id="enable-additional-info" name="enableAdditionalInfo" class="hidden">
+            <label for="enable-additional-info">Add Additional Info &#x25BE;</label>
+            <div id="additional-info-form" class="optional-form hidden">
+                <h3>Additional Info</h3>
+                <div class="form-group">
+                    <label for="hobbies">Hobbies</label>
+                    <input type="text" id="hobbies" name="hobbies" placeholder="e.g. Swimming">
+                </div>
+                <div class="form-group">
+                    <label for="additional-info">Additional Info (Optional)</label>
+                    <input type="text" id="additional-info" name="additionalInfo" placeholder="e.g. School Champion">
+                </div>
+                <button type="button" class="btn add-more" onclick="addMoreFields('additional-info-form', 'additional-info')">Add More</button>
+            </div>
+        </div>
+    
+        <div class="action-buttons">
+            <button class="btn" onclick="submitResume()">Submit & Preview</button>
+        </div>
+    </div>
+
+        <!-- Progress bar to show the completion status of the resume creation steps -->
+        <div class="progress">
+            <div class="progress-bar" id="progressValue"></div>
+        </div>
+    </main>
+        <!-- Modal Structure -->
+    <div id="alertModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2>Alert!</h2>
+            <p id="modalMessage"></p>
+            <button class="btn" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+    <!-- Modal HTML -->
+    <div id="degreeModal" class="modal">
+        <div class="modal-content">
+                Enter Specialization
+                <input type="text" id="modalInput" placeholder="Enter specialization or custom degree">
+                <button id="modalCancel" class="btn">Cancel</button>
+                <button id="modalSave" class="btn">Save</button>
+        </div>
+    </div>
+        <!-- Template Preview Modal -->
+    <div id="templatePreviewModal" class="modal hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000;">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeTemplatePreview()">&times;</span>
+            <iframe id="templatePreviewFrame" src="" frameborder="0" style="width: 100%; height: 500px;"></iframe>
+        </div>
+    </div>
+    <!-- Include Awesomplete JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+    <!-- Canvas -->
+    <canvas id="canvas"></canvas>
+    <script src="/scripts/canvas.js"></script>
+
+    <script>
+                document.addEventListener('DOMContentLoaded', function() {
+            const languageInput = document.getElementById('language-name');
+        
+            function fetchCSV(url) {
+                return fetch(url)
+                    .then(response => response.text())
+                    .then(data => {
+                        return data.split('\n').map(row => {
+                            const columns = row.split(',');
+                            return columns[1] ? columns[1].trim() : ''; // Check if the second column exists
+                        }).filter(name => name !== '');
+                    });
+            }
+        
+            function initializeLanguagesAwesomplete(list) {
+                new Awesomplete(languageInput, {
+                    list: list,
+                    minChars: 1,
+                    maxItems: 10,
+                    autoFirst: true
+                });
+            }
+        
+            // Fetch and initialize languages
+            fetchCSV('/data/languages.csv')
+                .then(languages => {
+                    console.log("Awesomplete languages initialized");
+                    initializeLanguagesAwesomplete(languages);
+                })
+                .catch(error => console.error('Error fetching languages:', error));
+        });
+    </script>
+    <script>
+// Function to add more fields dynamically
+function addMoreFields(formId, type) {
+    const form = document.getElementById(formId);
+    let newFields = '';
+
+    switch (type) {
+        case 'website':
+            newFields = `
+                <div class="form-group">
+                    <label for="website-name">Website Name</label>
+                    <input type="text" name="websiteName[]" placeholder="e.g. LinkedIn">
+                </div>
+                <div class="form-group">
+                    <label for="website-link">Website Link</label>
+                    <input type="url" name="websiteLink[]" placeholder="e.g. https://www.linkedin.com/in/yourprofile">
+                </div>`;
+            break;
+        case 'certification':
+            newFields = `
+                <div class="form-group">
+                    <label for="certification-name">Certification Name</label>
+                    <input type="text" name="certificationName[]" placeholder="e.g. AWS Certified Solutions Architect">
+                </div>
+                <div class="form-group">
+                    <label for="issuing-org">Issuing Organization</label>
+                    <input type="text" name="issuingOrg[]" placeholder="e.g. Amazon Web Services">
+                </div>
+                <div class="form-group">
+                    <label for="issue-date">Issue Date</label>
+                    <input type="date" name="issueDate[]">
+                </div>
+                <div class="form-group">
+                    <label for="certification-link">Certification Link (Optional)</label>
+                    <input type="url" name="certificationLink[]" placeholder="e.g. https://www.yourcertification.com">
+                </div>
+                <div class="form-group">
+                    <label for="credential-id">Credential ID (Optional)</label>
+                    <input type="text" name="credentialId[]" placeholder="e.g. 123456789">
+                </div>`;
+            break;
+        case 'language':
+            newFields = `
+                <div class="form-group">
+                    <label for="language-name">Language</label>
+                    <input type="text" class="language-name" name="languageName[]" placeholder="e.g. English">
+                </div>
+                <div class="form-group">
+                    <label for="proficiency-level">Proficiency Level</label>
+                    <select name="proficiencyLevel[]">
+                        <option value="Native or Bilingual">Native or Bilingual</option>
+                        <option value="Professional">Professional</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Beginner">Beginner</option>
+                    </select>
+                </div>`;
+            break;
+        case 'accomplishment':
+            newFields = `
+                <div class="form-group">
+                    <label for="accomplishment-name">Accomplishment Name</label>
+                    <input type="text" name="accomplishmentName[]" placeholder="e.g. Published Research Paper">
+                </div>
+                <div class="form-group">
+                    <label for="accomplishment-org">Organization</label>
+                    <input type="text" name="accomplishmentOrg[]" placeholder="e.g. IEEE">
+                </div>`;
+            break;
+        case 'affiliation':
+            newFields = `
+                <div class="form-group">
+                    <label for="membership-type">Membership Type</label>
+                    <input type="text" name="membershipType[]" placeholder="e.g. Member">
+                </div>
+                <div class="form-group">
+                    <label for="affiliation-org">Organization</label>
+                    <input type="text" name="affiliationOrg[]" placeholder="e.g. ACM">
+                </div>`;
+            break;
+        case 'additional-info':
+            newFields = `
+                <div class="form-group">
+                    <label for="hobbies">Hobbies</label>
+                    <input type="text" name="hobbies[]" placeholder="e.g. Swimming">
+                </div>
+                <div class="form-group">
+                    <label for="additional-info">Additional Info (Optional)</label>
+                    <input type="text" name="additionalInfo[]" placeholder="e.g. School Champion">
+                </div>`;
+            break;
+    }
+
+    const div = document.createElement('div');
+    div.innerHTML = newFields;
+    const addButton = form.querySelector('.add-more');
+    form.insertBefore(div, addButton);
+
+    // Reinitialize Awesomplete for new language inputs
+    if (type === 'language') {
+        languageInit();
+    }
+}
+
+function languageInit() {
+    const languageInputs = document.querySelectorAll('.language-name');
+
+    function fetchCSV(url) {
+        return fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                return data.split('\n').map(row => {
+                    const columns = row.split(',');
+                    return columns[1] ? columns[1].trim() : ''; // Check if the second column exists
+                }).filter(name => name !== '');
+            });
+    }
+
+    function initializeLanguagesAwesomplete(list) {
+        languageInputs.forEach(languageInput => {
+            new Awesomplete(languageInput, {
+                list: list,
+                minChars: 1,
+                maxItems: 10,
+                autoFirst: true
+            });
+        });
+    }
+
+    // Fetch and initialize languages
+    fetchCSV('/data/languages.csv')
+        .then(languages => {
+            console.log("Awesomplete languages initialized");
+            initializeLanguagesAwesomplete(languages);
+        })
+        .catch(error => console.error('Error fetching languages:', error));
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const formId = this.id.replace('enable-', '') + '-form';
+            const form = document.getElementById(formId);
+            if (this.checked) {
+                form.classList.remove('hidden');
+                form.querySelectorAll('input, select').forEach(input => input.required = true);
+            } else {
+                form.classList.add('hidden');
+                form.querySelectorAll('input, select').forEach(input => input.required = false);
+            }
+        });
+    });
+
+    languageInit();
+});
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const degreeInput = document.getElementById('educationDegree');
+        
+            function fetchDegrees(url) {
+                return fetch(url)
+                    .then(response => response.text())
+                    .then(data => {
+                        const degrees = data.split('-').map(degree => degree.trim()).filter(degree => degree !== '');
+                        return degrees;
+                    });
+            }
+        
+            function initializeDegreeAwesomplete(list) {
+                new Awesomplete(degreeInput, {
+                    list: list,
+                    minChars: 1,
+                    maxItems: 10,
+                    autoFirst: true,
+                    filter: function(text, input) {
+                        // Remove spaces and dots from the input
+                        const normalizedInput = input.replace(/[\s.]/g, '').toLowerCase();
+                        // Remove spaces and dots from the text
+                        const normalizedText = text.replace(/[\s.]/g, '').toLowerCase();
+                        return normalizedText.includes(normalizedInput);
+                    },
+                    item: function(text, input) {
+                        // Highlight the matched part
+                        const normalizedInput = input.replace(/[\s.]/g, '').toLowerCase();
+                        const normalizedText = text.replace(/[\s.]/g, '').toLowerCase();
+                        const index = normalizedText.indexOf(normalizedInput);
+                        if (index === -1) {
+                            return Awesomplete.ITEM(text, input);
+                        }
+                        const highlightedText = text.substring(0, index) + '<mark>' + text.substring(index, index + normalizedInput.length) + '</mark>' + text.substring(index + normalizedInput.length);
+                        return Awesomplete.ITEM(highlightedText, input);
+                    }
+                });
+            }
+        
+            // Fetch and initialize degrees
+            fetchDegrees('/data/degrees.txt')
+                .then(degrees => {
+                    console.log("Awesomplete degrees initialized");
+                    initializeDegreeAwesomplete(degrees);
+                })
+                .catch(error => console.error('Error fetching degrees:', error));
+        });
+    </script>
+    <script>
+                // Function to open the template preview modal
+        function openTemplatePreview(templateUrl) {
+            const modal = document.getElementById('templatePreviewModal');
+            const iframe = document.getElementById('templatePreviewFrame');
+            iframe.src = templateUrl;
+            modal.style.display = 'block';
+        }
+        
+        // Function to close the template preview modal
+        function closeTemplatePreview() {
+            const modal = document.getElementById('templatePreviewModal');
+            const iframe = document.getElementById('templatePreviewFrame');
+            iframe.src = '';
+            modal.style.display = 'none';
+        }
+        
+        // Close the modal if the user clicks outside the modal content
+        window.onclick = function(event) {
+            const modal = document.getElementById('templatePreviewModal');
+            if (event.target === modal) {
+                closeTemplatePreview();
+            }
+        };
+    </script>
+    <script>
+let summaryQuill; // Declare the Quill editor for the summary
+let aiSummaryGenerated = false; // Flag to prevent multiple AI calls
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Initialize Quill editor for the summary
+    summaryQuill = new Quill('#summary-editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                ['bold', 'italic', 'underline'],
+                [{ 'align': [] }],
+                [{ 'color': [] }, { 'background': [] }],
+                ['clean'] // remove formatting button
+            ]
+        }
+    });
+
+    function getMostRecentJobTitle() {
+        const jobTitles = document.querySelectorAll('#job-title');
+        const startDates = document.querySelectorAll('#start-date'); // Make sure to have the correct IDs
+
+        if (jobTitles.length === 0) return null;
+
+        const jobs = [];
+        jobTitles.forEach((jobTitleElement, index) => {
+            const jobTitle = jobTitleElement.value;
+            const startDate = startDates[index] ? new Date(startDates[index].value) : new Date();
+
+            jobs.push({ jobTitle, startDate });
+        });
+
+        // Sort jobs by start date (most recent first)
+        jobs.sort((a, b) => b.startDate - a.startDate);
+
+        // Return the most recent job title
+        return jobs.length > 0 ? jobs[0].jobTitle : null;
+    }
+
+    // Function to generate the AI summary and directly insert it
+    function generateAISummary() {
+        const jobTitle = getMostRecentJobTitle();
+        const skills = document.getElementById('skills-input').value;
+        const experience = document.getElementById('experience-level').value;
+    
+        if (!jobTitle || !skills) return; // Skip if job title or skills are empty
+        if (aiSummaryGenerated) return; // Avoid multiple API calls
+    
+        // Ensure the summary editor is empty before fetching
+        if (summaryQuill.root.innerHTML.trim() === '' || summaryQuill.root.innerHTML === '<p><br></p>') {
+            // Show the loading overlay
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const loadingText = document.getElementById('loading-text');
+            loadingOverlay.classList.remove('hidden');
+    
+            // Switch the loading text
+            const loadingMessages = ['Thinking...', 'Generating...'];
+            let messageIndex = 0;
+            const loadingInterval = setInterval(() => {
+                loadingText.textContent = loadingMessages[messageIndex];
+                messageIndex = (messageIndex + 1) % loadingMessages.length;
+            }, 1000); // Switch text every 1 second
+    
+            fetch(`/generate-summary?jobTitle=${encodeURIComponent(jobTitle)}&skills=${encodeURIComponent(skills)}&experience=${experience}`)
+                .then(response => response.json())
+                .then(data => {
+                    clearInterval(loadingInterval); // Clear the interval
+                    loadingOverlay.classList.add('hidden'); // Hide the loading overlay
+    
+                    if (data.success) {
+                        // Directly insert the AI-generated summary into the editor
+                        summaryQuill.root.innerHTML = `<p>${data.summary}</p>`;
+                        aiSummaryGenerated = true; // Set flag to true after successful generation
+                        console.log('AI Summary Generated and Inserted:', data.summary);
+                    } else {
+                        alert('Failed to generate AI summary.');
+                    }
+                })
+                .catch(err => {
+                    clearInterval(loadingInterval); // Clear the interval
+                    loadingOverlay.classList.add('hidden'); // Hide the loading overlay
+                    console.error('Error generating AI summary:', err);
+                    alert('Failed to generate AI summary. Please try again.');
+                });
+        }
+    }
+
+    // Save the summary and proceed to the next step
+    function saveSummaryAndProceed() {
+        const content = summaryQuill.root.innerHTML.trim();
+        if (content !== '' && content !== '<p><br></p>') {
+            console.log('Saved Summary:', content);
+            showPage('step-8');
+        } else {
+            alert('Please provide a summary before proceeding.');
+        }
+    }
+
+    // Automatically generate AI summary when step 7 is opened
+    const step7Element = document.getElementById('step-7');
+    const observer = new MutationObserver(() => {
+        if (!step7Element.classList.contains('hidden') && !aiSummaryGenerated) {
+            generateAISummary();
+        }
+    });
+
+    observer.observe(step7Element, { attributes: true });
+
+    // Add event listener to the "Next" button in step 7
+    document.querySelector('#step-7 .next-btn').addEventListener('click', saveSummaryAndProceed);
+});
+
+    </script>
+    <script>
+        let jobDescriptions = []; // Object to store job descriptions for each job title
+        let currentJobIndex = 0; // Index to track the current job being processed
+        let quill; // Declare quill variable in the global scope
+        
+        function goToWorkHistoryPage() {
+            // Get all job titles from step-4, ensuring non-empty values
+            const jobTitles = Array.from(document.querySelectorAll('#experience-entries .experience-entry input[name="jobTitle[]"]')).filter(job => job.value.trim() !== '');
+        
+            console.log('Navigating to Work History Page...');
+            console.log('Job Titles:', jobTitles);
+            console.log('Current Job Index:', currentJobIndex, 'Total Jobs:', jobTitles.length);
+        
+            if (jobTitles.length === 0) {
+                // If no job titles are provided, directly go to step-5
+                console.warn('No job titles provided. Navigating to step-5.');
+                showPage('step-5');
+                return;
+            }
+        
+            if (currentJobIndex < jobTitles.length) {
+                // Save the current job description if any
+                if (currentJobIndex > 0) {
+                    const previousJobTitle = jobTitles[currentJobIndex - 1].value;
+                    jobDescriptions[previousJobTitle] = quill.root.innerHTML;
+                    console.log('Saved Job Description for', previousJobTitle, ':', jobDescriptions[previousJobTitle]);
+                }
+        
+                // Get the job title for the current index
+                const jobTitleStep4 = jobTitles[currentJobIndex].value;
+                console.log('Current Job Title:', jobTitleStep4);
+        
+                // Set the job title in workHistoryPage2
+                document.getElementById('job-title-ai').value = jobTitleStep4;
+        
+                // Clear the editor for the new job title or load the existing description if available
+                quill.root.innerHTML = jobDescriptions[jobTitleStep4] || '';
+                console.log('Loaded Job Description for', jobTitleStep4, ':', quill.root.innerHTML);
+        
+                // Show the work history page
+                showPage('workHistoryPage2');
+
+                // Automatically generate job description if the loaded description is empty
+                if (!jobDescriptions[jobTitleStep4]) {
+                console.log('Generating job description for:', jobTitleStep4);
+                generateJobDescription(); // Automatically call the function to generate description
+                }
+            } else {
+                // All job titles have been processed, proceed to the next step
+                console.log('All jobs processed, navigating to step-5');
+                showPage('step-5');
+            }
+        }
+        
+        function removeEmptyBulletPoints() {
+            const editor = quill.root; // Get the Quill editor's root element
+            const bulletPoints = editor.querySelectorAll('li'); // Select all list items (bullet points)
+        
+            bulletPoints.forEach(bullet => {
+                // Check if the bullet point is empty or contains only a line break
+                if (bullet.textContent.trim() === '' || bullet.innerHTML === '<br>') {
+                    bullet.remove(); // Remove the empty bullet point
+                    console.log('Removed empty bullet point');
+                }
+            });
+        }
+
+function saveCurrentJobDescription() {
+    // Get all job titles from step-4
+    const jobTitles = Array.from(document.querySelectorAll('#experience-entries .experience-entry input[name="jobTitle[]"]')).filter(job => job.value.trim() !== '');
+
+    console.log('Saving Job Description for Index:', currentJobIndex);
+
+    if (currentJobIndex < jobTitles.length) {
+        const jobTitle = jobTitles[currentJobIndex].value.trim();
+        if (jobTitle) {
+            // Remove empty bullet points before saving
+            removeEmptyBulletPoints();
+
+            // Save only if the job title is not empty
+            const content = quill.root.innerHTML.trim();
+            if (content !== '' && content !== '<p><br></p>') {
+                // Use the current job index to save the description
+                jobDescriptions[currentJobIndex] = content;
+                console.log('Saved Job Description for Index', currentJobIndex, ':', jobDescriptions[currentJobIndex]);
+            } else {
+                console.warn('Job Description is empty or invalid for', jobTitle);
+            }
+        }
+    }
+}      
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize Quill editor
+            quill = new Quill('#job-description-editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic', 'underline'],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        [{ 'align': [] }],
+                        [{ 'color': [] }, { 'background': [] }],
+                        ['clean'] // remove formatting button
+                    ]
+                }
+            });
+        
+            // Function to remove empty <p> tags
+            function removeEmptyParagraphs() {
+                const editor = quill.root;
+                const emptyParagraphs = editor.querySelectorAll('p');
+                emptyParagraphs.forEach(paragraph => {
+                    if (paragraph.innerHTML === '<br>') {
+                        paragraph.remove();
+                        console.log('Removed empty paragraph');
+                    }
+                });
+            }
+        
+            // Remove the empty <p> tag added by Quill immediately after initialization
+            removeEmptyParagraphs();
+        
+            // Listen for text-change events to remove empty <p> tags
+            quill.on('text-change', function () {
+                removeEmptyParagraphs();
+            });
+        
+            // Add event listener to the "Next" button in Step 4 (class `a`)
+            document.querySelector('.btn.next-btn.a').addEventListener('click', function () {
+                console.log('Next button in Step 4 clicked.');
+                goToWorkHistoryPage();
+            });
+        
+            // Add event listener to the "Next" button in `workHistoryPage2` (class `b`)
+            document.querySelector('.btn.next-btn.b').addEventListener('click', function () {
+                console.log('Next button in Work History Page clicked.');
+                saveCurrentJobDescription();
+        
+                const jobTitles = Array.from(document.querySelectorAll('#experience-entries .experience-entry input[name="jobTitle[]"]')).filter(job => job.value.trim() !== '');
+        
+                if (currentJobIndex < jobTitles.length - 1) {
+                    // Only increment if there's another job to process
+                    currentJobIndex++;
+                    console.log('Moving to next job title, new Index:', currentJobIndex);
+                    goToWorkHistoryPage();
+                } else {
+                    // All jobs have been processed, move to step-5
+                    console.log('All job titles processed, navigating to step-5.');
+                    showPage('step-5');
+                }
+            });
+        });        
+    </script>
+    <script>
+                document.addEventListener('DOMContentLoaded', function() {
+            // Function to initialize Awesomplete
+            function initializeAwesomplete() {
+                fetch('/data/job-titles.txt')
+                    .then(response => response.text())
+                    .then(data => {
+                        // Split the data by comma, trim whitespace, and remove duplicates
+                        const jobTitles = Array.from(new Set(data.split(',').map(title => title.trim())));
+                        console.log("Awesomplete jobTitles initialized");
+                        // Initialize Awesomplete
+                        new Awesomplete(document.getElementById('job-title'), {
+                            list: jobTitles,
+                            minChars: 3,
+                            maxItems: 10,
+                            autoFirst: true
+                        });
+                    })
+                    .catch(error => console.error('Error fetching job titles:', error));
+        
+                fetch('/data/companies.txt')
+                    .then(response => response.text())
+                    .then(data => {
+                        // Split the data by comma, trim whitespace, and remove duplicates
+                        const employer = Array.from(new Set(data.split(',').map(title => title.trim())));
+                        console.log("Awesomplete employer initialized");
+                        // Initialize Awesomplete
+                        new Awesomplete(document.getElementById('employer'), {
+                            list: employer,
+                            minChars: 2,
+                            maxItems: 10,
+                            autoFirst: true
+                        });
+                    })
+                    .catch(error => console.error('Error fetching employers:', error));
+            }
+        
+            // Initialize Awesomplete on page load
+            initializeAwesomplete();
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const locationInput = document.getElementById('location');
+            const awesomplete = new Awesomplete(locationInput, {
+                minChars: 3,
+                maxItems: 10,
+                autoFirst: true
+            });
+        
+            let debounceTimeout;
+        
+            function fetchLocations(query) {
+                return fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        return data.map(place => place.display_name);
+                    });
+            }
+        
+            locationInput.addEventListener('input', function() {
+                const query = locationInput.value.trim();
+        
+                clearTimeout(debounceTimeout);
+        
+                if (query.length >= 3) {
+                    debounceTimeout = setTimeout(() => {
+                        fetchLocations(query)
+                            .then(locations => {
+                                awesomplete.list = locations;
+                            })
+                            .catch(error => console.error('Error fetching locations:', error));
+                    }, 300); // Delay of 300ms
+                } else {
+                    awesomplete.list = []; // Clear suggestions if query is empty
+                }
+            });
+        
+            // Prevent input box from losing focus
+            locationInput.addEventListener('awesomplete-open', function() {
+                locationInput.focus();
+            });
+        });
+    </script>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const institutionInput = document.getElementById('institution');
+
+    function fetchCSV(url) {
+        return fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                return new Promise((resolve, reject) => {
+                    Papa.parse(data, {
+                        header: true,
+                        skipEmptyLines: true,
+                        complete: function(results) {
+                            const institutions = results.data.map(row => {
+                                const university = row['University Name'] ? row['University Name'].replace(/"/g, '').trim() : '';
+                                const college = row['College Name'] ? row['College Name'].replace(/"/g, '').trim() : '';
+                                return `${college}, ${university}`; // Combine College and University
+                            }).filter(institution => institution !== ', '); // Filter out any empty values
+                            resolve(institutions);
+                        },
+                        error: function(error) {
+                            reject(error);
+                        }
+                    });
+                });
+            });
+    }
+
+    function initializeAwesomplete2(list) {
+        new Awesomplete(institutionInput, {
+            list: list,
+            minChars: 1,
+            maxItems: 10,
+            autoFirst: true
+        });
+    }
+
+    // Fetch and initialize institutions
+    fetchCSV('/data/institutions.csv')
+        .then(institutions => {
+            console.log("Awesomplete institutions initialized");
+            initializeAwesomplete2(institutions);
+        })
+        .catch(error => console.error('Error fetching institutions:', error));
+});
+    </script>
+    <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const specializationInput = document.getElementById('specialization');
+                
+                    function fetchCSV(url) {
+                        return fetch(url)
+                            .then(response => response.text())
+                            .then(data => {
+                                return new Promise((resolve, reject) => {
+                                    Papa.parse(data, {
+                                        header: true,
+                                        skipEmptyLines: true,
+                                        complete: function(results) {
+                                            const specializations = results.data.map(row => {
+                                                return row['CIPTitle'] ? row['CIPTitle'].replace(/\.$/, '').trim() : '';
+                                            }).filter(title => title);
+                                            resolve(specializations);
+                                        },
+                                        error: function(error) {
+                                            reject(error);
+                                        }
+                                    });
+                                });
+                            });
+                    }
+                
+                    function initializeSpecializationAwesomplete(list) {
+                        new Awesomplete(specializationInput, {
+                            list: list,
+                            minChars: 1,
+                            maxItems: 10,
+                            autoFirst: true
+                        });
+                    }
+                
+                    // Fetch and initialize specializations
+                    fetchCSV('/data/streams.csv')
+                        .then(specializations => {
+                            console.log("Awesomplete specializations initialized");
+                            initializeSpecializationAwesomplete(specializations);
+                        })
+                        .catch(error => console.error('Error fetching specializations:', error));
+                });
+    </script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cityInput = document.getElementById('city');
+    const countryInput = document.getElementById('country');
+    const pinCodeInput = document.getElementById('pin-code');
+    const cityDropdown = document.getElementById('city-dropdown');
+
+    let debounceTimeout;
+
+    function debounce(func, delay) {
+        return function(...args) {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
+
+    function fetchDetailsFromCity() {
+        const cityState = cityInput.value.split(',');
+        const city = cityState[0].trim();
+        const state = cityState[1] ? cityState[1].trim() : '';
+        const country = countryInput.value.trim();
+
+        if (city && country.toLowerCase() === 'india') {
+            const url = `https://api.postalpincode.in/postoffice/${encodeURIComponent(city)}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data[0].Status === "Success" && data[0].PostOffice.length > 0) {
+                        cityDropdown.innerHTML = '';
+                        data[0].PostOffice.forEach(postOffice => {
+                            const dropdownItem = document.createElement('div');
+                            dropdownItem.classList.add('dropdown-item');
+                            dropdownItem.textContent = `${postOffice.Name}, ${postOffice.State}`;
+                            dropdownItem.addEventListener('click', () => {
+                                cityInput.value = `${postOffice.Name}, ${postOffice.State}`;
+                                pinCodeInput.value = postOffice.Pincode || '';
+                                cityDropdown.classList.add('hidden');
+                            });
+                            cityDropdown.appendChild(dropdownItem);
+                        });
+                        cityDropdown.classList.remove('hidden');
+                    } else {
+                        cityDropdown.classList.add('hidden');
+                        pinCodeInput.value = '';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching details:', error);
+                    cityDropdown.classList.add('hidden');
+                    pinCodeInput.value = '';
+                });
+        }
+    }
+
+    function fetchDetailsFromPinCode() {
+        const pinCode = pinCodeInput.value.trim();
+
+        if (pinCode) {
+            const url = `https://api.postalpincode.in/pincode/${encodeURIComponent(pinCode)}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data[0].Status === "Success" && data[0].PostOffice.length > 0) {
+                        const postOffice = data[0].PostOffice[0];
+                        cityInput.value = `${postOffice.Name}, ${postOffice.State}`;
+                        countryInput.value = postOffice.Country || '';
+                    } else {
+                        cityInput.value = '';
+                        countryInput.value = '';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching details:', error);
+                    cityInput.value = '';
+                    countryInput.value = '';
+                });
+        }
+    }
+
+    cityInput.addEventListener('input', debounce(fetchDetailsFromCity, 250));
+    pinCodeInput.addEventListener('blur', fetchDetailsFromPinCode);
+});
+    </script>
+    <script>
+               document.addEventListener('DOMContentLoaded', function() {
+            const skillsVisibleInput = document.getElementById('skills-visible-input');
+            const skillsInput = document.getElementById('skills-input'); // Hidden input for backend
+            const skillsContainer = document.getElementById('skills-container');
+            const skillsInputContainer = document.getElementById('skills-input-container');
+            const userId = localStorage.getItem('userId') || document.getElementById('user-id').value;
+        
+            function fetchKeywords(url) {
+                return fetch(url)
+                    .then(response => response.text())
+                    .then(data => {
+                        return data.split('\n').map(keyword => keyword.trim()).filter(keyword => keyword !== '');
+                    });
+            }
+        
+            function initializeSkillsAwesomplete(list) {
+                const awesomplete = new Awesomplete(skillsVisibleInput, {
+                    list: list,
+                    minChars: 1,
+                    maxItems: 10,
+                    autoFirst: true
+                });
+        
+                // Handle selection from Awesomplete suggestions
+                skillsVisibleInput.addEventListener('awesomplete-selectcomplete', function(event) {
+                    const value = event.text.value.trim();
+                    if (value) {
+                        createTag(value);
+                        skillsVisibleInput.value = ''; // Clear the visible input after creating a tag
+                    }
+                });
+            }
+        
+            function createTag(text) {
+                // Capitalize the first letter of each skill
+                const formattedText = text;
+        
+                if (!isDuplicateSkill(formattedText)) {
+                    const tag = document.createElement('div');
+                    tag.classList.add('skill-tag');
+                    tag.textContent = formattedText;
+        
+                    const removeButton = document.createElement('span');
+                    removeButton.classList.add('remove-tag');
+                    removeButton.textContent = '❌';
+                    removeButton.addEventListener('click', () => {
+                        skillsContainer.removeChild(tag);
+                        updateSkillsInput();
+                    });
+        
+                    tag.appendChild(removeButton);
+                    skillsContainer.insertBefore(tag, skillsInputContainer);
+                    updateSkillsInput();
+                }
+            }
+        
+            function updateSkillsInput() {
+                const tags = skillsContainer.querySelectorAll('.skill-tag');
+                const skills = Array.from(tags).map(tag => tag.textContent.replace('❌', '').trim());
+                const skillsString = skills.join(',');
+                skillsInput.value = skillsString; // Update the hidden input with the comma-separated skills
+                skillsInput.setCustomValidity(skillsString ? '' : 'Please fill in all required fields: skills'); // Set custom validity
+            }
+        
+            function isDuplicateSkill(skill) {
+                const tags = skillsContainer.querySelectorAll('.skill-tag');
+                return Array.from(tags).some(tag => tag.textContent.replace('❌', '').trim().toLowerCase() === skill.toLowerCase());
+            }
+        
+            function handleInput(event) {
+                if (event.key === 'Enter' || event.key === ',') {
+                    event.preventDefault();
+                    const value = skillsVisibleInput.value.trim();
+                    if (value) {
+                        createTag(value);
+                        skillsVisibleInput.value = ''; // Clear the input field after creating a tag
+                    }
+                }
+            }
+        
+            skillsVisibleInput.addEventListener('keydown', handleInput);
+        
+            // Fetch and initialize keywords
+            fetchKeywords('/data/keywords.txt')
+                .then(keywords => {
+                    console.log("Awesomplete keywords initialized");
+                    initializeSkillsAwesomplete(keywords);
+                })
+                .catch(error => console.error('Error fetching keywords:', error));
+        
+            // Fetch resume details and autofill skill tags
+            fetch(`/resume/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.resume) {
+                        console.log(data.resume);
+                        const skills = data.resume.skills ? data.resume.skills.split(',') : [];
+                        skills.forEach(skill => createTag(skill.trim()));
+                        populateForm(data);
+                    }
+                })
+                .catch(error => console.error('Error fetching resume details:', error));
+                function populateForm(data) {
+                    const { resume, education, experience, websites, certifications, languages, accomplishments, affiliations, additionalInfo } = data;
+                
+                    console.log('Data received:', data);
+                
+                    // Populate profile picture checkbox
+                    document.getElementById('enable-profile-pic').checked = resume.enableProfilePic;
+                
+                    // Helper function to convert object to array if necessary
+                    function toArray(value) {
+                        return Array.isArray(value) ? value : (value && typeof value === 'object' ? Object.values(value) : []);
+                    }
+                
+                    // Populate websites
+                    const websitesArray = toArray(websites);
+                    if (websitesArray.length > 0) {
+                        document.getElementById('enable-websites').checked = true;
+                        document.getElementById('websites-form').classList.remove('hidden');
+                        websitesArray.forEach((website, index) => {
+                            if (index === 0) {
+                                document.getElementById('website-name').value = website.websiteName || '';
+                                document.getElementById('website-link').value = website.websiteLink || '';
+                            } else {
+                                addMoreFields('websites-form', 'website');
+                                const websiteNameElements = document.getElementsByName('websiteName[]');
+                                const websiteLinkElements = document.getElementsByName('websiteLink[]');
+                                websiteNameElements[websiteNameElements.length - 1].value = website.websiteName || '';
+                                websiteLinkElements[websiteLinkElements.length - 1].value = website.websiteLink || '';
+                            }
+                        });
+                    }
+                
+                    // Populate certifications
+                    const certificationsArray = toArray(certifications);
+                    if (certificationsArray.length > 0) {
+                        document.getElementById('enable-certifications').checked = true;
+                        document.getElementById('certifications-form').classList.remove('hidden');
+                        certificationsArray.forEach((cert, index) => {
+                            if (index === 0) {
+                                document.getElementById('certification-name').value = cert.certificationName || '';
+                                document.getElementById('issuing-org').value = cert.issuingOrg || '';
+                                document.getElementById('issue-date').value = cert.issueDate || '';
+                                document.getElementById('certification-link').value = cert.certificationLink || '';
+                                document.getElementById('credential-id').value = cert.credentialId || '';
+                            } else {
+                                addMoreFields('certifications-form', 'certification');
+                                const certificationNameElements = document.getElementsByName('certificationName[]');
+                                const issuingOrgElements = document.getElementsByName('issuingOrg[]');
+                                const issueDateElements = document.getElementsByName('issueDate[]');
+                                const certificationLinkElements = document.getElementsByName('certificationLink[]');
+                                const credentialIdElements = document.getElementsByName('credentialId[]');
+                                certificationNameElements[certificationNameElements.length - 1].value = cert.certificationName || '';
+                                issuingOrgElements[issuingOrgElements.length - 1].value = cert.issuingOrg || '';
+                                issueDateElements[issueDateElements.length - 1].value = cert.issueDate || '';
+                                certificationLinkElements[certificationLinkElements.length - 1].value = cert.certificationLink || '';
+                                credentialIdElements[credentialIdElements.length - 1].value = cert.credentialId || '';
+                            }
+                        });
+                    }
+                
+                    // Populate languages
+                    const languagesArray = toArray(languages);
+                    if (languagesArray.length > 0) {
+                        document.getElementById('enable-languages').checked = true;
+                        document.getElementById('languages-form').classList.remove('hidden');
+                        languagesArray.forEach((lang, index) => {
+                            if (index === 0) {
+                                document.getElementById('language-name').value = lang.languageName || '';
+                                document.getElementById('proficiency-level').value = lang.proficiencyLevel || '';
+                            } else {
+                                addMoreFields('languages-form', 'language');
+                                const languageNameElements = document.getElementsByName('languageName[]');
+                                const proficiencyLevelElements = document.getElementsByName('proficiencyLevel[]');
+                                languageNameElements[languageNameElements.length - 1].value = lang.languageName || '';
+                                proficiencyLevelElements[proficiencyLevelElements.length - 1].value = lang.proficiencyLevel || '';
+                            }
+                        });
+                    }
+                
+                    // Populate accomplishments
+                    const accomplishmentsArray = toArray(accomplishments);
+                    if (accomplishmentsArray.length > 0) {
+                        document.getElementById('enable-accomplishments').checked = true;
+                        document.getElementById('accomplishments-form').classList.remove('hidden');
+                        accomplishmentsArray.forEach((acc, index) => {
+                            if (index === 0) {
+                                document.getElementById('accomplishment-name').value = acc.accomplishmentName || '';
+                                document.getElementById('accomplishment-org').value = acc.accomplishmentOrg || '';
+                            } else {
+                                addMoreFields('accomplishments-form', 'accomplishment');
+                                const accomplishmentNameElements = document.getElementsByName('accomplishmentName[]');
+                                const accomplishmentOrgElements = document.getElementsByName('accomplishmentOrg[]');
+                                accomplishmentNameElements[accomplishmentNameElements.length - 1].value = acc.accomplishmentName || '';
+                                accomplishmentOrgElements[accomplishmentOrgElements.length - 1].value = acc.accomplishmentOrg || '';
+                            }
+                        });
+                    }
+                
+                    // Populate affiliations
+                    const affiliationsArray = toArray(affiliations);
+                    if (affiliationsArray.length > 0) {
+                        document.getElementById('enable-affiliations').checked = true;
+                        document.getElementById('affiliations-form').classList.remove('hidden');
+                        affiliationsArray.forEach((aff, index) => {
+                            if (index === 0) {
+                                document.getElementById('membership-type').value = aff.membershipType || '';
+                                document.getElementById('affiliation-org').value = aff.affiliationOrg || '';
+                            } else {
+                                addMoreFields('affiliations-form', 'affiliation');
+                                const membershipTypeElements = document.getElementsByName('membershipType[]');
+                                const affiliationOrgElements = document.getElementsByName('affiliationOrg[]');
+                                membershipTypeElements[membershipTypeElements.length - 1].value = aff.membershipType || '';
+                                affiliationOrgElements[affiliationOrgElements.length - 1].value = aff.affiliationOrg || '';
+                            }
+                        });
+                    }
+                
+                    // Populate additional info
+                    const additionalInfoArray = toArray(additionalInfo);
+                    if (additionalInfoArray.length > 0) {
+                        document.getElementById('enable-additional-info').checked = true;
+                        document.getElementById('additional-info-form').classList.remove('hidden');
+                        additionalInfoArray.forEach((info, index) => {
+                            if (index === 0) {
+                                document.getElementById('hobbies').value = info.hobbies || '';
+                                document.getElementById('additional-info').value = info.additionalInfo || '';
+                            } else {
+                                addMoreFields('additional-info-form', 'additional-info');
+                                const hobbiesElements = document.getElementsByName('hobbies[]');
+                                const additionalInfoElements = document.getElementsByName('additionalInfo[]');
+                                hobbiesElements[hobbiesElements.length - 1].value = info.hobbies || '';
+                                additionalInfoElements[additionalInfoElements.length - 1].value = info.additionalInfo || '';
+                            }
+                        });
+                    }
+                }
+            });       
+    </script>
+    <!--<script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize Quill editor
+            const quill = new Quill('#job-description-editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic', 'underline'],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        [{ 'align': [] }],
+                        [{ 'color': [] }, { 'background': [] }],
+                        ['clean'] // remove formatting button
+                    ]
+                }
+            });
+        
+            // Function to remove empty <p> tags
+            function removeEmptyParagraphs() {
+                const editor = quill.root;
+                const emptyParagraphs = editor.querySelectorAll('p');
+                emptyParagraphs.forEach(paragraph => {
+                    if (paragraph.innerHTML === '<br>') {
+                        paragraph.remove();
+                    }
+                });
+            }
+        
+            // Remove the empty <p> tag added by Quill immediately after initialization
+            removeEmptyParagraphs();
+        
+            // Listen for text-change events to remove empty <p> tags
+            quill.on('text-change', function() {
+                removeEmptyParagraphs();
+            });
+        
+            // If you need to get the editor content in HTML format for the backend
+            function getEditorContent() {
+                return quill.root.innerHTML;
+            }
+        });
+    </script>-->
+    <script>
+        // JavaScript to handle the checkbox behavior
+        document.addEventListener('DOMContentLoaded', function () {
+            const currentWorkCheckboxes = document.querySelectorAll('.current-work-checkbox');
+            const endDateInputs = document.querySelectorAll('.end-date');
+    
+            currentWorkCheckboxes.forEach((checkbox, index) => {
+                checkbox.addEventListener('change', function () {
+                    if (checkbox.checked) {
+                        endDateInputs[index].removeAttribute('required');
+                        endDateInputs[index].disabled = true; // Disable the end date input
+                        endDateInputs[index].value = ''; // Clear the input if it's checked
+                    } else {
+                        endDateInputs[index].setAttribute('required', 'required');
+                        endDateInputs[index].disabled = false; // Enable the end date input
+                    }
+                });
+            });
+        });
+    </script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add the blurred class to the body
+            document.body.classList.add('blurred');
+            const loadingText = document.getElementById('loading-p');
+                        // Switch the loading text
+                        const loadingMessages = ['Loading...50%', 'Loading...90%', 'Please wait...', 'Almost there...'];
+                        let messageIndex = 0;
+                        const loadingInterval = setInterval(() => {
+                            loadingText.textContent = loadingMessages[messageIndex];
+                            messageIndex = (messageIndex + 1) % loadingMessages.length;
+                        }, 100); // Switch text every 0.1 seconds
+            // Remove the loading placeholder and blur effect after 0.5 seconds
+            setTimeout(function() {
+                document.getElementById('loading-placeholder').style.display = 'none';
+                document.body.classList.remove('blurred');
+            }, 500); // 500 milliseconds = 0.5 seconds
+        });
+    </script>
+</body>
+</html>

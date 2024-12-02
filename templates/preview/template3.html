@@ -1,0 +1,124 @@
+<!-- Elegant Two-Column Template -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegant Two-Column Resume</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            color: #444;
+            background-color: #f3f3f3;
+            margin: 0;
+            padding: 40px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .left-column {
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+        .profile-picture {
+            display: none;
+            width: 100%;
+            border-radius: 10px;
+        }
+        h2 {
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        .skills ul {
+            list-style: none;
+            padding: 0;
+        }
+        .skills li {
+            background-color: #27ae60;
+            color: #fff;
+            padding: 5px;
+            margin: 5px 0;
+            display: inline-block;
+            border-radius: 3px;
+        }
+        .optional-section {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-column">
+            <div class="header">
+                <img class="profile-picture" src="profile.jpg" alt="Profile Picture">
+                <h1>Michael Johnson</h1>
+                <p>Email: michael.j@example.com</p>
+                <p>Phone: 555-1234-567</p>
+                <p>LinkedIn: linkedin.com/in/michaeljohnson</p>
+            </div>
+
+            <div class="skills">
+                <h2>Skills</h2>
+                <ul>
+                    <li>Skill A</li>
+                    <li>Skill B</li>
+                    <li>Skill C</li>
+                </ul>
+            </div>
+
+            <!-- Optional Sections -->
+            <div class="optional-section websites">
+                <h2>Websites, Portfolios, Profiles</h2>
+                <p>Links to online portfolios or personal projects.</p>
+            </div>
+            <div class="optional-section certifications">
+                <h2>Certifications</h2>
+                <p>Relevant certifications and credentials.</p>
+            </div>
+            <div class="optional-section languages">
+                <h2>Languages</h2>
+                <p>Language proficiencies.</p>
+            </div>
+            <div class="optional-section accomplishments">
+                <h2>Accomplishments</h2>
+                <p>Notable career achievements or awards.</p>
+            </div>
+        </div>
+        <div class="right-column">
+            <div class="summary">
+                <h2>Professional Summary</h2>
+                <p>A summary of professional goals and career highlights.</p>
+            </div>
+
+            <div class="experience">
+                <h2>Professional Experience</h2>
+                <p><strong>Title</strong> - Employer (Year - Year)</p>
+                <ul>
+                    <li>Key responsibility or project</li>
+                    <li>Key responsibility or project</li>
+                </ul>
+            </div>
+
+            <div class="education">
+                <h2>Education</h2>
+                <p><strong>Qualification</strong> - University (Year - Year)</p>
+            </div>
+
+            <div class="optional-section additional-info">
+                <h2>Additional Information</h2>
+                <p>Details such as hobbies or affiliations.</p>
+            </div>
+            <div class="optional-section affiliations">
+                <h2>Affiliations</h2>
+                <p>Groups or memberships.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

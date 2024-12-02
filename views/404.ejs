@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="404 - Page Not Found">
+    <meta name="author" content="Worknet">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon">
+  <title>404 - Page Not Found</title>
+    <style>
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+    </style>
+</head>
+<!-- the inline CSS on the body ("margin: 0px;") removes the extra space
+     around the canvas, making it flush with the edge of the page -->
+<body style="margin: 0px;">
+  <canvas id="canvas"/>
+<script>
+    setTimeout(function() {
+        var modal = document.createElement("div");
+        modal.style.position = "fixed";
+        modal.style.top = "50%";
+        modal.style.left = "50%";
+        modal.style.transform = "translate(-50%, -50%)";
+        modal.style.padding = "20px";
+        modal.style.backgroundColor = "white";
+        modal.style.boxShadow = "0 0 10px rgba(0,0,0,0.5)";
+        modal.style.zIndex = "1000";
+        
+        var message = document.createElement("p");
+        message.textContent = "404 - Page Not Found";
+        modal.appendChild(message);
+        
+        document.body.appendChild(modal);
+    modal.style.borderRadius = "10px";
+    modal.style.backdropFilter = "blur(10px)";
+    modal.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
+    modal.style.color = "white";
+    modal.style.textAlign = "center";
+    modal.style.fontFamily = "Arial, sans-serif";
+    modal.style.fontSize = "18px";
+
+    var choices = [
+        { text: "Go to AI Page", href: "/ai" },
+        { text: "Go to Main Page", href: "/main" },
+        { text: "Go to Dashboard", href: "/dashboard" },
+        { text: "Return to Homepage", href: "/home" }
+    ];
+
+    choices.forEach(function(choice) {
+        var button = document.createElement("button");
+        button.textContent = choice.text;
+        button.onclick = function() {
+            window.location.href = choice.href;
+        };
+        button.style.margin = "10px";
+        button.style.padding = "10px 20px";
+        button.style.border = "none";
+        button.style.borderRadius = "5px";
+        button.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
+        button.style.color = "white";
+        button.style.cursor = "pointer";
+        button.style.fontSize = "16px";
+        button.style.backdropFilter = "blur(5px)";
+        button.onmouseover = function() {
+            button.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
+        };
+        button.onmouseout = function() {
+            button.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
+        };
+        modal.appendChild(button);
+    });
+}, 5000);
+</script>
+  <script src="/scripts/lib/requestAnimFrame.js"></script>
+  <script>
+
+var canvas = document.getElementById("canvas");
+var c = canvas.getContext("2d");
+
+var numStars = 1000;
+var radius = 1;
+var focalLength = canvas.width;
+
+var centerX, centerY;
+
+var stars = [], star;
+var i;
+
+var animate = false;
+
+initializeStars();
+
+function executeFrame(){
+  if(animate)
+    requestAnimFrame(executeFrame);
+  moveStars();
+  drawStars();
+}
+
+function initializeStars(){
+  centerX = canvas.width / 2;
+  centerY = canvas.height / 2;
+  
+  stars = [];
+  for(i = 0; i < numStars; i++){
+    star = {
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      z: Math.random() * canvas.width
+    };
+    stars.push(star);
+  }
+}
+
+function moveStars(){
+  for(i = 0; i < numStars; i++){
+    star = stars[i];
+    star.z--;
+    
+    if(star.z <= 0){
+      star.z = canvas.width;
+    }
+  }
+}
+
+function drawStars(){
+  var pixelX, pixelY, pixelRadius;
+  
+  // Resize to the screen
+  if(canvas.width != window.innerWidth || canvas.width != window.innerWidth){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    initializeStars();
+  }
+  
+  c.fillStyle = "black";
+  c.fillRect(0,0, canvas.width, canvas.height);
+  c.fillStyle = "white";
+  for(i = 0; i < numStars; i++){
+    star = stars[i];
+    
+    pixelX = (star.x - centerX) * (focalLength / star.z);
+    pixelX += centerX;
+    pixelY = (star.y - centerY) * (focalLength / star.z);
+    pixelY += centerY;
+    pixelRadius = radius * (focalLength / star.z);
+    
+    c.beginPath();
+    c.arc(pixelX, pixelY, pixelRadius, 0, 2 * Math.PI);
+    c.fill();
+  }
+}
+
+canvas.addEventListener("mousemove",function(e){
+  focalLength = e.x;
+});
+
+// Kick off the animation when the mouse enters the canvas
+canvas.addEventListener('mouseover', function(e){
+  animate = true;
+  executeFrame();
+});
+
+// Pause animation when the mouse exits the canvas
+canvas.addEventListener("mouseout",function(e){
+  mouseDown = false;
+  animate = false;
+});
+
+// Draw the first frame to start animation
+executeFrame();
+  </script>
+</body>
+</html>

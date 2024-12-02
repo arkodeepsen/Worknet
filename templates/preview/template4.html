@@ -1,0 +1,133 @@
+<!-- Modern One-Page Design -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern One-Page Resume</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #fafafa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #3498db;
+            color: #fff;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .profile-picture {
+            display: none;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 20px auto;
+        }
+        .main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px 0;
+        }
+        h2 {
+            color: #3498db;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 5px;
+        }
+        .skills ul {
+            list-style: none;
+            padding: 0;
+        }
+        .skills li {
+            background-color: #2ecc71;
+            color: #fff;
+            padding: 5px 15px;
+            margin: 5px 0;
+            display: inline-block;
+            border-radius: 5px;
+        }
+        .optional-section {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img class="profile-picture" src="profile.jpg" alt="Profile Picture">
+            <h1>Alex Brown</h1>
+            <p>Email: alex.brown@example.com | Phone: 789-654-3210 | GitHub: github.com/alexbrown</p>
+        </div>
+
+        <div class="main">
+            <div class="left">
+                <div class="summary">
+                    <h2>Professional Summary</h2>
+                    <p>An overview of qualifications and career goals.</p>
+                </div>
+
+                <div class="education">
+                    <h2>Education</h2>
+                    <p><strong>Degree</strong> - College (Year - Year)</p>
+                </div>
+
+                <div class="skills">
+                    <h2>Skills</h2>
+                    <ul>
+                        <li>JavaScript</li>
+                        <li>Python</li>
+                        <li>React</li>
+                    </ul>
+                </div>
+
+                <!-- Optional Sections -->
+                <div class="optional-section websites">
+                    <h2>Websites, Portfolios, Profiles</h2>
+                    <p>Links to online portfolios or personal projects.</p>
+                </div>
+                <div class="optional-section certifications">
+                    <h2>Certifications</h2>
+                    <p>Relevant certifications and credentials.</p>
+                </div>
+            </div>
+
+            <div class="right">
+                <div class="experience">
+                    <h2>Professional Experience</h2>
+                    <p><strong>Job Role</strong> - Company Name (Year - Year)</p>
+                    <ul>
+                        <li>Achievement or responsibility</li>
+                        <li>Achievement or responsibility</li>
+                    </ul>
+                </div>
+
+                <div class="optional-section languages">
+                    <h2>Languages</h2>
+                    <p>Languages spoken fluently.</p>
+                </div>
+                <div class="optional-section accomplishments">
+                    <h2>Accomplishments</h2>
+                    <p>Notable professional achievements.</p>
+                </div>
+                <div class="optional-section additional-info">
+                    <h2>Additional Information</h2>
+                    <p>Additional details or hobbies.</p>
+                </div>
+                <div class="optional-section affiliations">
+                    <h2>Affiliations</h2>
+                    <p>Organizational memberships.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

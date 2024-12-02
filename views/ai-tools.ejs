@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tools</title>
+    <link rel="stylesheet" href="/style/ai-tools.css">
+    <script src="/scripts/index.js"></script>
+    <script src="/scripts/lib/requestAnimFrame.js"></script>
+    <style>
+        #chat-interface {
+            background: transparent;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #chat-interface .message {
+            margin-bottom: 10px;
+        }
+        #chat-interface .message.ai {
+            background: linear-gradient(to right, #c6c6ff, #6f6fff, #0000cd, #2fffe7, #640082, #992be2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        #chat-interface .message.user {
+            background: linear-gradient(to right, #9b9bff, #ff4500);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+        }
+        #chat-input {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        #chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #333;
+            background: linear-gradient(to right, #9b9bff, #ff4500);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+            border-radius: 4px;
+        }
+        #chat-input button {
+            padding: 10px 20px;
+            background-color: rgba(51, 51, 51, 0.4);
+            color: #2fffe7;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        #options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            background: transparent;
+            width: 100%;
+        }
+        .option-card {
+            display: flex;
+            padding: 20px;
+            border-radius: 8px;
+            background: rgba(51, 51, 51, 0.4);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+            color: #2fffe7;
+        }
+        .option-card:hover {
+            transform: scale(1.05);
+        }
+        .option-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            margin-right: 20px;
+            opacity: 0.8;
+            border: #2fffe7 2px solid;
+            animation: Glow 1s infinite alternate ease-in-out;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        @keyframes Glow {
+            0% { box-shadow: 0 0 10px #2fffe7; }
+            50% { box-shadow: 0 0 20px #2fffe7; transform: scale(1.015); }
+            100% { box-shadow: 0 0 10px #2fffe7; }
+        }
+        .option-card h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        .option-card p {
+            margin: 5px 0 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/home"><img src="/assets/worknet.png" alt="Worknet Logo"></a>
+            <div class="profile">
+                <img id="profile-pic-small" src="/assets/default.jpg" alt="Profile Picture" onclick="window.location.href='/dashboard'">
+            </div>
+        </nav>
+        <h1 class="title">WorkNet Advanced AI Tools</h1>
+        <h2 class="greeting">Hello, <span id="firstname" class="username"></span></h2>
+    </header>
+    <main>
+        <section id="chat-interface">
+            <div class="message ai">Hello! Here are the AI tools you can use:</div>
+            <div id="chat-messages"></div>
+            <div id="chat-input">
+                <input type="text" id="chat-input-field" placeholder="Type your query here or select from one of the options below...">
+                <button id="chat-submit-button">Enter</button>
+            </div>
+        </section>
+        <section id="options-grid">
+            <div class="option-card" data-option="AI Resume Builder">
+                <img src="/assets/resume-builder.jpg" alt="AI Resume Generator">
+                <div>
+                    <h2>AI Resume Builder</h2>
+                    <p>Create professional resumes with AI assistance from scratch.</p>
+                </div>
+            </div>
+            <div class="option-card" data-option="Handwritten CV/Resume Extractor and Converter">
+                <img src="/assets/handwritten.png" alt="Handwritten CV/Resume Extractor">
+                <div>
+                    <h2>Handwritten CV/Resume Extractor and Converter</h2>
+                    <p>Convert handwritten resumes to digital format.</p>
+                </div>
+            </div>
+            <div class="option-card" data-option="AI PDF Resume Details Extractor">
+                <img src="/assets/pdf-ai.jpg" alt="AI PDF Resume Details Extractor">
+                <div>
+                    <h2>AI PDF Resume Details Extractor</h2>
+                    <p>Extract details from PDF resumes effortlessly.</p>
+                </div>
+            </div>
+            <div class="option-card" data-option="AI Image Enhancer">
+                <img src="/assets/image-ai.jpg" alt="AI Image Enhancer">
+                <div>
+                    <h2>AI Image Background Remover & Enhancer</h2>
+                    <p>Enhance your images with AI-powered tools.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 WorkNet. All rights reserved.</p>
+    </footer>
+    <canvas id="canvas"></canvas>
+    <script src="/scripts/canvas.js"></script>
+    <script>
+        // Ensure the user is logged in, otherwise redirect to home
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+            window.location.href = '/home';
+        } else {
+            // Fetch and display the username and profile picture
+            fetch(`/get-user-details/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        const username = data.firstName || 'User';
+                        const profilePicture = data.profilePicture && data.profilePicture !== 'null' 
+                            ? data.profilePicture 
+                            : '/assets/default-profile-picture.jpg';
+                            typeEffect(username + '.');
+                        document.getElementById('profile-pic-small').src = profilePicture;
+                    } else {
+                        console.error('No user details found.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching user details:', error);
+                });
+        }
+        function typeEffect(username) {
+            const element = document.getElementById('firstname');
+            const malfunctionChars = '!@#$%^&*()_+{}:"<>?|[];\',./`~';
+            let index = 0;
+            let isDeleting = false;
+            let isMalfunctioning = false;
+            let malfunctionIndex = 0;
+            let displayText = '';
+            
+            let flag = true;
+            function type() {
+                if (isDeleting) {
+                    displayText = displayText.slice(0, -1);
+                    element.textContent = displayText;
+                    if (displayText.length === 0) {
+                        isDeleting = false;
+                        isMalfunctioning = !isMalfunctioning;
+                        malfunctionIndex = 0;
+                        index = 0;
+                    }
+                } else {
+                    if (isMalfunctioning && flag) {
+                        if (malfunctionIndex < 11) {
+                            const randomChar = malfunctionChars[Math.floor(Math.random() * malfunctionChars.length)];
+                            displayText += randomChar;
+                            malfunctionIndex++;
+                        } else {
+                            displayText = '${username}';
+                            element.textContent = displayText;
+                            setTimeout(() => {
+                                isDeleting = true;
+                                flag = false;
+                            }, 1000);
+                        }
+                    } else {
+                        if (index < username.length) {
+                            displayText += username[index];
+                            index++;
+                        } else {
+                            element.textContent = displayText;
+                            setTimeout(() => {
+                                isDeleting = true;
+                                flag = true;
+                            }, 1000);
+                        }
+                    }
+                    element.textContent = displayText;
+                }
+                setTimeout(type, isDeleting ? 50 : 150);
+            }
+
+            type();
+        }
+    </script>
+    <script>
+        const options = {
+            "AI Resume Builder": {
+                description: "Create professional resumes with AI assistance from scratch. This tool helps you craft a resume that stands out by providing templates, suggestions, and real-time feedback.",
+                link: "/resume-generator"
+            },
+            "Handwritten CV/Resume Extractor and Converter": {
+                description: "Convert handwritten resumes to digital format. This tool uses advanced OCR technology to accurately extract text from handwritten documents and convert them into editable digital formats.",
+                link: "/handwritten"
+            },
+            "AI PDF Resume Details Extractor": {
+                description: "Extract details from PDF resumes effortlessly. This tool scans your PDF documents and extracts key information such as contact details, work experience, and education, making it easy to organize and analyze resumes.",
+                link: "/pdf-extract"
+            },
+            "AI Image Enhancer": {
+                description: "Enhance your images with AI-powered tools. This tool allows you to remove backgrounds, adjust colors, and improve the overall quality of your images with just a few clicks.",
+                link: "/image-enhancer"
+            }
+        };
+
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const option = card.getAttribute('data-option');
+                document.getElementById('chat-input-field').value = option;
+                addMessage('user', option);
+                showOptionDetails(option);
+            });
+        });
+
+        document.getElementById('chat-submit-button').addEventListener('click', handleChatSubmit);
+document.getElementById('chat-input-field').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        handleChatSubmit();
+    }
+});
+// Function to fetch user details from the database
+async function fetchUserDetails(userId) {
+    try {
+      const response = await fetch(`/get-user-details/${userId}`);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      return null;
+    }
+  }
+
+async function handleChatSubmit() {
+    const inputField = document.getElementById('chat-input-field');
+    const query = inputField.value.trim().toLowerCase();
+
+    const optionKeywords = {
+        "AI Resume Builder": ["resume", "builder", "create resume", "ai resume"],
+        "Handwritten CV/Resume Extractor and Converter": ["handwritten", "cv", "resume", "extractor", "converter"],
+        "AI PDF Resume Details Extractor": ["pdf", "resume", "extract", "details"],
+        "AI Image Enhancer": ["image", "enhancer", "background remover", "ai image"]
+    };
+    const userDetails = await fetchUserDetails(userId);
+
+  if (!userDetails) {
+    console.error('Failed to fetch user details');
+        return;
+    }
+
+    let matchedOption = null;
+
+    for (const [option, keywords] of Object.entries(optionKeywords)) {
+        if (keywords.some(keyword => query.includes(keyword))) {
+            matchedOption = option;
+            break;
+        }
+    }
+    
+    if (matchedOption) {
+        showOptionDetails(matchedOption);
+    } else {
+        // Handle non-option queries
+        const payload = {
+            userId,
+            message: query,
+            firstname: userDetails.firstName,
+            lastname: userDetails.lastName,
+            city: userDetails.city,
+            gender: userDetails.gender,
+            languages: userDetails.languages,
+            type: userDetails.type,
+            courses: userDetails.courses,
+            college: userDetails.college,
+            stream: userDetails.stream,
+            startYear: userDetails.startYear,
+            endYear: userDetails.endYear,
+            skills: userDetails.skills,
+            email: userDetails.email,
+            contact: userDetails.contact,
+            tools: true,
+        };
+
+        addMessage('user', query);
+        // Show typing indicator with ai.gif
+        const chatMessages = document.getElementById('chat-messages');
+        const typingIndicator = document.createElement('div');
+        typingIndicator.style.alignItems = 'top';
+        typingIndicator.innerHTML = `
+            <div>
+                <img src="chatbot/ai.gif" alt="Bot Icon" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 10px;">
+                <div>
+                        <div style="background: linear-gradient(to right, #c6c6ff, #6f6fff, #0000cd, #2fffe7, #640082, #992be2); -webkit-background-clip: text; background-clip: text; color: transparent;">Thinking...</div>
+                    </div>
+            </div>
+            <br>
+            <br>
+        `;
+        chatMessages.appendChild(typingIndicator);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Send message to the backend
+        fetch('http://127.0.0.1:5000/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload), // Include userId in the payload
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log('Response:', data); // Log the response
+            // Use innerHTML and replace newlines with <br> for better formatting
+            var formattedResponse = data.response
+                .replace(/\*\*(.*?)\*\*/g, '<br><b>$1</b><br>') // Convert **bold** to <b>
+                .replace(/\*(.*?)\*/g, '<i>$1</i>') // Convert *italic* to <i>
+                .replace(/^\* (.+)$/gm, '<li>$1</li>') // Convert * bullet points to <li>
+                .replace(/(<li>.+<\/li>)/g, '<ul>$1</ul>'); // Wrap <li> in <ul>
+
+            // Update the typing indicator with the bot's response and change the icon
+            typingIndicator.innerHTML = `
+                <div>
+                    <img src="chatbot/worknet.gif" alt="Bot Icon" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 10px;">
+                    <div>
+                        <div style="background: linear-gradient(to right, #c6c6ff, #6f6fff, #0000cd, #2fffe7, #640082, #992be2); -webkit-background-clip: text; background-clip: text; color: transparent;">${formattedResponse}</div>
+                    </div>
+                </div>
+                <br>
+                <br>`;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            inputField.value = '';
+            inputField.focus();
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+        function addMessage(sender, text) {
+            const chatMessages = document.getElementById('chat-messages');
+            const message = document.createElement('div');
+            message.className = `message ${sender}`;
+            message.textContent = text;
+            chatMessages.appendChild(message);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+                function showOptionDetails(option) {
+            const chatMessages = document.getElementById('chat-messages');
+            const details = options[option];
+        
+            // Clear previous messages
+            chatMessages.innerHTML = '';
+            addMessage('user', option);
+            addMessage('ai', details.description);
+        
+            const proceedButton = document.createElement('button');
+            proceedButton.textContent = 'Proceed';
+            proceedButton.className = 'proceed-button';
+            proceedButton.style.padding = '10px 20px';
+            proceedButton.style.backgroundColor = 'rgba(51, 51, 51, 0.4)';
+            proceedButton.style.color = '#2fffe7';
+            proceedButton.style.border = 'none';
+            proceedButton.style.borderRadius = '4px';
+            proceedButton.style.cursor = 'pointer';
+            proceedButton.style.marginLeft = '10px';
+            proceedButton.addEventListener('click', () => {
+                window.location.href = details.link;
+            });
+            proceedButton.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    window.location.href = details.link;
+                }
+            });
+            chatMessages.appendChild(proceedButton);
+            document.getElementById('chat-input').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
