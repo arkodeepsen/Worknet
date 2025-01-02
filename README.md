@@ -6,7 +6,7 @@ WorkNet is a comprehensive platform developed for the Government of Rajasthan as
 
 ## Features
 
-- **User Authentication**: Secure signup and login with password hashing using `bcrypt`.
+- **User Authentication**: Secure signup and login with password hashing using `bcrypt` and 2FA with email verification.
 - **AI Integration**: Advanced AI functionalities including job recommendations, resume generation, chatbot services, and multimodal features.
 - **Dynamic DOCX Generation**: Create personalized documents using `docxtemplater`.
 - **Database Management**: Utilize SQLite for efficient data storage and retrieval.
