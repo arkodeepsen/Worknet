@@ -2372,6 +2372,11 @@ app.get('/get-chat-history/:userId', async (req, res) => {
 app.delete('/clear-chat-history/:userId', async (req, res) => {
   const userId = req.params.userId;
 
+  // Validate userId to ensure it is alphanumeric
+  if (!/^[a-zA-Z0-9]+$/.test(userId)) {
+    return res.status(400).json({ success: false, message: 'Invalid userId format' });
+  }
+
   try {
     const response = await fetch(`http://127.0.0.1:5000/clear-chat-history/${userId}`, {
       method: 'DELETE'
